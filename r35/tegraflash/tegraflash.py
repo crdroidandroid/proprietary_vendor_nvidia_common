@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# Copyright (c) 2014-2022, NVIDIA Corporation.  All Rights Reserved.
+# Copyright (c) 2014-2023, NVIDIA Corporation.  All Rights Reserved.
 #
 # NVIDIA Corporation and its licensors retain all intellectual property
 # and proprietary rights in and to this software, related documentation
@@ -83,10 +83,10 @@ exports = {
             "--nv_oemratchet":"0", "--image_dirs":None, "--trim_bpmp_dtb":False, "--cpubl":None,
             "--concat_cpubl_bldtb":False, "--external_device":False, "--cust_info": None,
             "--sparseupdate": False, "--ratchet_blob":None, "--applet_softfuse":None,
-            "--secondary_gpt_backup":False, "--boot_chain":None, "--bct_backup":False,
+            "--boot_chain":None, "--bct_backup":False,
             "--mb1_bin":None, "--psc_bl1_bin":None,
-            "--rcmboot_pt_layout": None, "--coldboot_pt_layout": None, "--rcmboot_bct_cfg": None,
-            "--coldboot_bct_cfg": None, "--dce_base_dtb": None, "--dce_overlay_dtb": None,
+            "--rcmboot_cfg": None, "--coldboot_cfg": None, "--dce_base_dtb": None, "--dce_overlay_dtb": None,
+            "--iv": "RANDOM", "--compress": None
           }
 
 exit_on_error = False
@@ -108,10 +108,10 @@ def usage():
     '                    [--deviceprod_config <file>] [--minratchet_config <file>] [--skipsanitize] [--keep]',
     '                    [--output_dir <dir>] [--external_device], [--odmdata <odmdata|odmdata str>]',
     '                    [--overlay_dtb <dtb files>] [--cust_info <file>] [--sparseupdate]',
-    '                    [--secondary_gpt_backup] [--boot_chain <A|B>] [--bct_backup]',
+    '                    [--boot_chain <A|B>] [--bct_backup]',
     '                    [--mb1_bin] [--psc_bl1_bin]',
-    '                    [--coldboot_pt_layout], [--rcmboot_pt_layout], [--coldboot_bct_cfg], [--rcmboot_bct_cfg]'
-    '                    [--dce_base_dtb], [--dce_overlay_dtb]'
+    '                    [--coldboot_cfg], [--rcmboot_cfg]',
+    '                    [--dce_base_dtb], [--dce_overlay_dtb], [--disable_random_iv], [--compress <image_type>]',
 
     '   ',
     '   --bct           : Bootrom Boot Config Table file',
@@ -181,10 +181,11 @@ def usage():
     '   --overlay_dtb   : a list of comma seperated dtbs to be applied to base dtb',
     '   --cust_info     : customer data to be filled into BR-BCT',
     '   --sparseupdate  : only flash partitions that have changed. Currently only support SPI flash memory ',
-    '   --secondary_gpt_backup : flash secondary GPT backup partition',
     '   --bct_backup    : flash BCT backup partition as well when flashing BCT partition',
     '   --mb1_bin       : mb1 bootloader binary to download to bootrom in RCM',
     '   --psc_bl1_bin   : psc_bl1 binary to download to bootrom in RCM',
+    '   --disable_random_iv : Disable generation of random iv; iv is always 0',
+    '   --compress      : a partition needs to be compressed',
     '   '
     ]))
 
@@ -232,6 +233,14 @@ class tegraflashcmds(cmd.Cmd):
             chip_inst = tegraflash_internal
         return chip_inst
 
+    def check_args_any(self, *args):
+        # return 'True' if any arg in *args is specified; else return 'False'
+        for arg in args:
+            if exports[arg] is not None:
+                return 'True'
+
+        return 'False'
+
     def do_mkdevimages(self, param):
         tegraflash_update_env()
         params = param.replace('  ', ' ')
@@ -268,7 +277,11 @@ class tegraflashcmds(cmd.Cmd):
         params = param.replace('  ', ' ')
         args = param.split(' ')
         exports.update(dict(zip(args[::2], args[1::2])))
-        compulsory_args = ['--cfg', '--bl', '--chip', '--applet']
+
+        if self.check_args_any('--rcmboot_cfg', '--coldboot_cfg') == 'True':
+            compulsory_args = ['--cfg', '--bl', '--chip']
+        else:
+            compulsory_args = ['--cfg', '--bl', '--chip', '--applet']
 
         for required_arg in compulsory_args:
             if exports[required_arg] is None:
@@ -302,7 +315,11 @@ class tegraflashcmds(cmd.Cmd):
         params = param.replace('  ', ' ')
         args = param.split(' ')
         exports.update(dict(zip(args[::2], args[1::2])))
-        compulsory_args = ['--bct', '--cfg', '--bl', '--applet']
+
+        if self.check_args_any('--rcmboot_cfg') == 'True':
+            compulsory_args = ['--bl', '--chip']
+        else:
+            compulsory_args = ['--bct', '--cfg', '--bl', '--applet', '--chip']
 
         for required_arg in compulsory_args:
             if exports[required_arg] is None:
@@ -376,7 +393,11 @@ class tegraflashcmds(cmd.Cmd):
     def do_rcmboot(self, param):
         print ("\n Entering RCM boot\n")
         tegraflash_update_env()
-        compulsory_args = [ '--bl', '--chip', '--applet']
+
+        if self.check_args_any('--rcmboot_cfg') == 'True':
+            compulsory_args = [ '--bl', '--chip']
+        else:
+            compulsory_args = [ '--bl', '--chip', '--applet']
 
         for required_arg in compulsory_args:
             if exports[required_arg] is None:
@@ -1238,9 +1259,9 @@ if __name__ == '__main__':
                "deviceprod_config=", "rcm_bct=","mem_bct=", "mem_bct_cold_boot=", "mb1_cold_boot_bct=", "wb0sdram_config=",
                "minratchet_config=", "blversion=", "output_dir=", "nv_nvratchet=", "nv_oemratchet=", "image_dirs=",
                "trim_bpmp_dtb", "cpubl=", "concat_cpubl_bldtb", "external_device", "sparseupdate", "ratchet_blob=",
-               "applet_softfuse=", "secondary_gpt_backup", "boot_chain=", "bct_backup",
-               "mb1_bin=", "psc_bl1_bin=", "rcmboot_pt_layout=", "coldboot_pt_layout=", "rcmboot_bct_cfg=", "coldboot_bct_cfg=",
-               "dce_base_dtb=", "dce_overlay_dtb="]
+               "applet_softfuse=", "boot_chain=", "bct_backup",
+               "mb1_bin=", "psc_bl1_bin=", "rcmboot_cfg=", "coldboot_cfg=",
+               "dce_base_dtb=", "dce_overlay_dtb=", "disable_random_iv", "compress="]
 
     try:
       opts, args = getopt.getopt(sys.argv[1:], "h", options)
@@ -1277,14 +1298,14 @@ if __name__ == '__main__':
     if '--concat_cpubl_bldtb' in sys.argv[1:]:
         exports['--concat_cpubl_bldtb'] = True
 
-    if '--secondary_gpt_backup' in sys.argv[1:]:
-        exports['--secondary_gpt_backup'] = True
-
     if '--bct_backup' in sys.argv[1:]:
         exports['--bct_backup'] = True
 
     if '--enable_user_kdk' in sys.argv[1:]:
         exports['--enable_user_kdk'] = True
+
+    if '--disable_random_iv' in sys.argv[1:]:
+        exports['--iv'] = None
 
     abs_path = ['--bct', '--rcm_bct', '--cfg', '--bl', '--hostbin', '--key', '--encrypt_key', '--out', '--dtb', '--bldtb', '--kerneldtb',
                 '--nct', '--applet', '--fb', '--lnx', '--tos', '--eks', '--wb', '--bpfdtb', '--applet_softfuse',

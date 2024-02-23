@@ -1,5 +1,6 @@
 #
-# Copyright (c) 2014-2023, NVIDIA Corporation.  All Rights Reserved.
+# SPDX-FileCopyrightText: Copyright (c) 2014-2023, NVIDIA Corporation.  All Rights Reserved.
+# SPDX-License-Identifier: LicenseRef-NvidiaProprietary
 #
 # NVIDIA Corporation and its licensors retain all intellectual property
 # and proprietary rights in and to this software, related documentation
@@ -3138,20 +3139,6 @@ def compareGPTOfQspi(ix, device_info):
     except:
         return False
 
-def tegraflash_flash_secondary_gpt_backup():
-    if os.path.exists("gpt_secondary_3_0.bin"):
-        # On QSPI
-        filename = "gpt_secondary_3_0.bin"
-    elif os.path.exists("gpt_secondary_0_3.bin"):
-        # On eMMC
-        filename = "gpt_secondary_0_3.bin"
-    else:
-        raise tegraflash_exception("No image is found for secondary_gpt_backup partition")
-    command = exec_file('tegradevflash')
-    command.extend(['--write', 'secondary_gpt_backup', filename])
-    run_command(command)
-    return
-
 def tegraflash_just_flash(skipsanitize, device=None):
 
     if device:
@@ -3172,10 +3159,6 @@ def tegraflash_just_flash(skipsanitize, device=None):
     if device and type(device) == int:
         command.extend(['--dev',str(device)])
     run_command(command)
-
-    # Flash secondary_gpt_backup partition if required
-    if bool(values['--secondary_gpt_backup']) == True:
-        tegraflash_flash_secondary_gpt_backup()
 
 def tegraflash_reboot(args):
     if args[0] == 'coldboot':

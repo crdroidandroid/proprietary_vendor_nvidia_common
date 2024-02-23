@@ -37,6 +37,7 @@ ED25519_SIG_SIZE = 64
 XMSS_KEY_SIZE = 132
 RSA3K_KEY_SIZE = 384
 PCP_SIZE = 384
+IV_SIZE = 12
 
 MAX_KEY_LIST = 3
 
@@ -102,6 +103,11 @@ class Token:
         if self.buf == None:
             return None
         return hex_to_str(self.buf)
+
+    def is_valid(self):
+        if self.buf == None:
+            return False
+        return True
 
 class PkcKey:
     def __init__(self):
@@ -204,10 +210,20 @@ class DeviceId:
 class KDF:
     def __init__(self):
         self.iv = Token('00000000000000000000000000000000') #Set default value
+        self.iv_off = Token()
+        self.iv_sz = Token()
         self.aad = Token()
+        self.aad_off = Token()
+        self.aad_sz = Token()
+        self.salt1_off = Token()
+        self.salt1_sz = Token()
+        self.salt2_off = Token()
+        self.salt2_sz = Token()
         self.tag = Token()
         self.verify = 0
         self.label = Token()
+        self.label_off = Token()
+        self.label_sz = Token()
         self.bl_label = Token('0000000000000000')
         self.fw_label = Token('0000000000000000')
         self.tz_label = Token('0000000000000000')
@@ -230,6 +246,10 @@ class KDF:
         self.key_already_derived = False
         self.compress = None
         self.meta_blob_sz = 0
+        self.rdm_iv = False
+        self.rdm_label = False
+        self.rdm_salt1 = False
+        self.rdm_salt2 = False
 
     def parse_file(self, p_key, kdf_file, internal = None):
         try:
@@ -242,7 +262,9 @@ class KDF:
                   'MAGICID':None, 'FLAG':None, 'BL_DERSTR':None, 'FW_DERSTR':None,
                   'TZ_DERSTR':None, 'GP_DERSTR':None, 'DERKEY':None, 'DERROOT': None, 'PAYLOAD_OFF':None,
                   'PAYLOAD_SZ':None, 'DIGEST_OFF':None, 'TAG_OFF':None, 'ENC':None, 'BOOTMODE':None,
-                  'COMPRESS':None, 'METABLOBSIZE':None }
+                  'COMPRESS':None, 'METABLOBSIZE':None, 'IV_OFF':None, 'IV_SZ':None, 'RANDOM':None,
+                  'AAD_OFF':None, 'AAD_SZ':None, 'DERSTR_OFF':None, 'DERSTR_SZ':None,
+                  'SALT1_OFF':None, 'SALT1_SZ':None, 'SALT2_OFF':None, 'SALT2_SZ':None}
         for token in tokens:
             if token in params:
                 # Update the entries if they are found in internal dict
@@ -250,6 +272,10 @@ class KDF:
                     internal[tokens.get(token)] = params.get(token)
                 if token == 'AAD':
                     self.aad.parse(params.get(token))
+                elif token == 'AAD_OFF':
+                    self.aad_off.parse(params.get(token))
+                elif token == 'AAD_SZ':
+                    self.aad_sz.parse(params.get(token))
                 elif token == 'CHIPID':
                     self.deviceid.parse(params.get(token))
                 elif token == 'FLAG':
@@ -265,14 +291,35 @@ class KDF:
                 elif token == 'VER':
                     self.context.parse(params.get(token))
                 elif token == 'IV':
-                    if params.get(token).lower() != 'random': # Will generate random iv later
+                    if params.get(token).lower() == 'random': # Will generate random iv later
+                        self.rdm_iv = True
+                    else:
                         self.iv.parse(params.get(token))
+                elif token == 'IV_SZ':
+                    self.iv_sz.parse(params.get(token))
                 elif token == 'DERKEY':
                     self.dk = params.get(token)
                 elif token == 'DERROOT':
                     self.der_root = params.get(token)
                 elif token == 'DERSTR':
-                    self.label.parse(params.get(token))
+                    entry = params.get(token)
+                    # Check if the random directive has been set
+                    if self.rdm_label == True:
+                        self.label.parse(entry)
+                    else:
+                        self.label.parse(entry)
+                elif token == 'DERSTR_OFF':
+                    self.label_off.parse(params.get(token))
+                elif token == 'DERSTR_SZ':
+                    self.label_sz.parse(params.get(token))
+                elif token == 'SALT1_OFF':
+                    self.salt1_off.parse(params.get(token))
+                elif token == 'SALT1_SZ':
+                    self.salt1_sz.parse(params.get(token))
+                elif token == 'SALT2_OFF':
+                    self.salt2_off.parse(params.get(token))
+                elif token == 'SALT2_SZ':
+                    self.salt2_sz.parse(params.get(token))
                 elif token == 'BL_DERSTR':
                     self.bl_label.parse(params.get(token))
                 elif token == 'FW_DERSTR':
@@ -299,6 +346,14 @@ class KDF:
                     self.compress = params.get(token)
                 elif token == 'METABLOBSIZE':
                     self.meta_blob_sz = params.get(token)
+                elif token == 'RANDOM':
+                    rdm_list = params.get(token).upper()
+                    self.rdm_iv = True if 'IV' in rdm_list else False
+                    self.rdm_label = True if 'DERSTR' in rdm_list else False
+                    self.rdm_salt1 = True if 'SALT1' in rdm_list else False
+                    self.rdm_salt2 = True if 'SALT2' in rdm_list else False
+                elif token == 'IV_OFF':
+                    self.iv_off.parse(params.get(token))
 
     def parse(self, p_key, internal):
         kdf_arg = internal['--kdf']
@@ -356,6 +411,11 @@ class KDF:
         rlen = 32
         self.msg = compose_msg_data(CtrLoc.BEFORE, compose_ctr(rlen, 1), fixed_msg)
 
+    # This is for getting aad buffer mius the iv buffer
+    def get_aad_noiv(self):
+        aad = self.aad.get_strbuf()
+        iv = self.iv.get_strbuf()
+        return aad[0:len(aad) - len(iv)]
 
 class Key:
     def __init__(self):

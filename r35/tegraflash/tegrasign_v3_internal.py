@@ -1110,7 +1110,7 @@ def do_kdf_kdf2(kdk, kdd, label = None, context = None, HexLabel = False):
 
     return do_hmac_sha256(msg, len(msg), internal)
 
-def do_kdf_params_t234(dk, params, kdf_list):
+def do_kdf_params_t234(dk, params, kdf_list, p_key):
     # Note some kdf is using string operation, some are hex operation
     is_hex = True
     is_str = False
@@ -1120,8 +1120,8 @@ def do_kdf_params_t234(dk, params, kdf_list):
     dk_params = params['DK'][dk]
     dk_ctx = {
         'KDK'     : dk_params['KDK'],
-        'Label'   : hex_to_str(kdf_list[KdfArg.DKSTR]), # Note this is passed in
-        'Context' : hex_to_str(kdf_list[KdfArg.DKVER]), # Note this is passed in
+        'Label'   : p_key.kdf.label.get_strbuf(), # Note this is passed in
+        'Context' : p_key.kdf.context.get_strbuf(), # Note this is passed in
     }
 
     dk_ctx['Msg'] = get_composed_msg(dk_ctx['Label'], dk_ctx['Context'], L, is_hex)
@@ -1143,7 +1143,7 @@ def do_kdf_params_t234(dk, params, kdf_list):
         kdk_to_use = bl_dec_kdk_params['KDK']
         bl_dec_kdk_ctx = {
             'KDK'   : kdk_to_use,
-            'Label' : hex_to_str(kdf_list[KdfArg.BLSTR]),  # Note this is passed in
+            'Label' : p_key.kdf.bl_label.get_strbuf(),  # Note this is passed in
         }
 
         bl_dec_kdk_ctx['Msg'] = get_composed_msg(bl_dec_kdk_ctx['Label'], '', L, is_hex)
@@ -1154,7 +1154,7 @@ def do_kdf_params_t234(dk, params, kdf_list):
             kdk_to_use = fw_dec_kdk_params['KDK']
             fw_dec_kdk_ctx = {
                 "KDK"   : kdk_to_use,
-                "Label" : hex_to_str(kdf_list[KdfArg.FWSTR]),  # Note this is passed in
+                "Label" : p_key.kdf.fw_label.get_strbuf(),  # Note this is passed in
             }
 
             fw_dec_kdk_ctx['Msg'] = get_composed_msg(fw_dec_kdk_ctx['Label'], '', L, is_hex)
@@ -1173,7 +1173,7 @@ def do_kdf_params_t234(dk, params, kdf_list):
     return ([None, None,
             bl_dec_kdk_ctx["Msg"], kdk_ctx["Msg"], dk_ctx["Msg"]])
 
-def do_kdf(params_slist, kdf_list):
+def do_kdf(params_slist, kdf_list, p_key):
     base_name = script_dir + 'v3_kdf_' + pid
     raw_name = base_name + '.raw'
     result_name = base_name + '.tag'
@@ -1237,12 +1237,12 @@ def do_derive_dk(dk, params, kdf_list, p_key):
 
     if dk in dk_list:
         if p_key.kdf.deviceid.is_t234() == True:
-            params_slist = do_kdf_params_t234(dk, params, kdf_list)
+            params_slist = do_kdf_params_t234(dk, params, kdf_list, p_key)
+            return do_kdf(params_slist, kdf_list, p_key)
         else:
             from tegrasign_v3_nvkey_load import do_kdf_params
             return do_kdf_params(dk, params, kdf_list)
 
-        return do_kdf(params_slist, kdf_list)
     raise tegrasign_exception('Can not derive %s' % (dk))
 
 def do_kdf_params_oem_t234(dk, params, kdf_list, p_key):
@@ -1517,10 +1517,46 @@ def do_kdf_oem_enc(kdf_list, p_key, blockSize):
             if dk not in dk_list:
                 raise tegrasign_exception('Can not derive %s' % (dk))
 
+            # pad back iv if it needs to be randomly generated,
+            if p_key.kdf.rdm_iv and p_key.kdf.iv_off.is_valid() \
+                and p_key.kdf.iv_sz.is_valid():
+                offset = int.from_bytes(p_key.kdf.iv_off.get_hexbuf(),  "little")
+                size = int.from_bytes(p_key.kdf.iv_sz.get_hexbuf(),  "little")
+                src[offset:offset+size] = random_gen(size)
+                p_key.kdf.iv.set_buf(src[offset:offset+size])
+
+            # pad back salt1 if it needs to be randomly generated,
+            if p_key.kdf.rdm_salt1 and p_key.kdf.salt1_off.is_valid() \
+                and p_key.kdf.salt1_sz.is_valid():
+                offset = int.from_bytes(p_key.kdf.salt1_off.get_hexbuf(),  "little")
+                size = int.from_bytes(p_key.kdf.salt1_sz.get_hexbuf(),  "little")
+                src[offset:offset+size] = random_gen(size)
+
+            # pad back salt2 if it needs to be randomly generated
+            if p_key.kdf.rdm_salt2 and p_key.kdf.salt2_off.is_valid() \
+                and p_key.kdf.salt2_sz.is_valid():
+                offset = int.from_bytes(p_key.kdf.salt2_off.get_hexbuf(),  "little")
+                size = int.from_bytes(p_key.kdf.salt2_sz.get_hexbuf(),  "little")
+                src[offset:offset+size] = random_gen(size)
+
+            # pad back label if it needs to be randomly generated,
+            if p_key.kdf.rdm_label and p_key.kdf.label_off.is_valid() \
+                and p_key.kdf.label_sz.is_valid():
+                offset = int.from_bytes(p_key.kdf.label_off.get_hexbuf(),  "little")
+                size = int.from_bytes(p_key.kdf.label_sz.get_hexbuf(),  "little")
+                src[offset:offset+size] = random_gen(size)
+                p_key.kdf.label.set_buf(src[offset:offset+size])
+
+            aad_offset = int.from_bytes(p_key.kdf.aad_off.get_hexbuf(),  "little")
+            aad_size = int.from_bytes(p_key.kdf.aad_sz.get_hexbuf(),  "little")
+            p_key.kdf.aad.set_buf(src[aad_offset:aad_offset+aad_size])
+
             pay_off = int.from_bytes(p_key.kdf.pay_off.get_hexbuf(),  "little")
             pay_sz = int.from_bytes(p_key.kdf.pay_sz.get_hexbuf(),  "little")
+
             if p_key.kdf.compress == 'TRUE':
                 pay_sz = pay_sz + int(p_key.kdf.meta_blob_sz)
+
             kdf_list = [p_key.kdf.iv.get_hexbuf(), p_key.kdf.aad.get_hexbuf(), p_key.kdf.tag.get_hexbuf(), \
                     src[pay_off:pay_off+pay_sz], p_key.kdf.flag, p_key.kdf.label.get_hexbuf(), p_key.kdf.context.get_hexbuf(), \
                     p_key.kdf.bl_label.get_hexbuf(), p_key.kdf.fw_label.get_hexbuf()]
@@ -1539,8 +1575,9 @@ def do_kdf_oem_enc(kdf_list, p_key, blockSize):
             if p_key.kdf.enc == 'USER_KDK':
                 do_kdf_with_user_kdk(params_slist[10], kdf_list, p_key, blockSize)
             else:
-                if (do_kdf_oem(params_slist, kdf_list, blockSize, p_key.kdf.compress) == False):
+                if (do_kdf_oem(p_key, params_slist, kdf_list, blockSize, p_key.kdf.compress) == False):
                     return False
+
             tag_off = int.from_bytes(p_key.kdf.tag_off.get_hexbuf(),  "little")
             # pad the tag and encrypted buffer
             src[pay_off:pay_off+pay_sz] = kdf_list[KdfArg.SRC][:]
@@ -1591,7 +1628,7 @@ def do_kdf_with_user_kdk(DkMsgStr, kdf_list, p_key, blockSize):
     if p_key.block_size == 0:
         kdf_list[KdfArg.SRC] = do_aes_gcm(kdf_list[KdfArg.SRC], len(kdf_list[KdfArg.SRC]), p_key, iv, aad, tag, verify_bytes, True)
         kdf_list[KdfArg.TAG] = p_key.kdf.tag.get_hexbuf()
-        return;
+        return
 
     # Use block_size to do metablob encryption
     iv_off = 0
@@ -1644,7 +1681,7 @@ def do_kdf_with_user_kdk(DkMsgStr, kdf_list, p_key, blockSize):
     # Save blob to the tag field
     p_key.kdf.tag.set_buf(blob_buf)
 
-def do_kdf_oem(params_slist, kdf_list, blockSize, isCompress):
+def do_kdf_oem(p_key, params_slist, kdf_list, blockSize, isCompress):
     if is_hsm():
         from tegrasign_v3_hsm import do_kdf_oem_hsm
         p_key = SignKey()
@@ -1740,7 +1777,7 @@ def do_derive_dk_oem(dk, params, kdf_list, p_key, blockSize):
             from tegrasign_v3_nvkey_load import do_kdf_params_oem
             params_slist = do_kdf_params_oem(dk, params, kdf_list, p_key)
 
-        return do_kdf_oem(params_slist, kdf_list, blockSize, p_key.kdf.compress)
+        return do_kdf_oem(p_key, params_slist, kdf_list, blockSize, p_key.kdf.compress)
     raise tegrasign_exception('Can not derive %s' % (dk))
 
 def map_bin_to_dk_oem(p_key, params):
@@ -2013,10 +2050,11 @@ def do_key_derivation(p_key, kdf_list, blockSize):
             return do_kdf_oem_enc(kdf_list, p_key, blockSize)
 
         elif (kdf_list[KdfArg.FLAG] <= DerKey.NVPDS):
+            info_print("TODO: none OEM or USER_KDK case should need random iv too")
             from tegrasign_v3_nvkey_load import load_params
             dk, params = load_params(p_key)
             return do_derive_dk(dk, params, kdf_list, p_key)
-
+        info_print("TODO: none OEM or USER_KDK case 2 should need random iv too")
         dk, params = load_params_oem(p_key)
         return do_derive_dk_oem(dk, params, kdf_list, p_key, blockSize)
 
