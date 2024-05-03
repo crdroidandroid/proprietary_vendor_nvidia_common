@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2018-2023, NVIDIA Corporation.  All Rights Reserved.
+# Copyright (c) 2018-2024, NVIDIA Corporation.  All Rights Reserved.
 #
 # NVIDIA Corporation and its licensors retain all intellectual property
 # and proprietary rights in and to this software, related documentation
@@ -1245,7 +1245,7 @@ def do_kdf_kdf2(kdk, kdd, label = None, context = None, HexLabel = False):
 
     return do_hmac_sha256(msg, len(msg), internal)
 
-def do_kdf_params_t234(dk, params, kdf_list):
+def do_kdf_params_t234(dk, params, kdf_list, p_key):
     # Note some kdf is using string operation, some are hex operation
     is_hex = True
     is_str = False
@@ -1256,8 +1256,8 @@ def do_kdf_params_t234(dk, params, kdf_list):
     dk_params = params['DK'][dk]
     dk_ctx = {
         'KDK'     : dk_params['KDK'],
-        'Label'   : hex_to_str(kdf_list[KdfArg.DKSTR]), # Note this is passed in
-        'Context' : hex_to_str(kdf_list[KdfArg.DKVER]), # Note this is passed in
+        'Label'   : p_key.kdf.label.get_strbuf(), # Note this is passed in
+        'Context' : p_key.kdf.context.get_strbuf(), # Note this is passed in
     }
 
     dk_ctx['Msg'] = get_composed_msg(dk_ctx['Label'], dk_ctx['Context'], L, is_hex)
@@ -1279,7 +1279,7 @@ def do_kdf_params_t234(dk, params, kdf_list):
         kdk_to_use = bl_dec_kdk_params['KDK']
         bl_dec_kdk_ctx = {
             'KDK'   : kdk_to_use,
-            'Label' : hex_to_str(kdf_list[KdfArg.BLSTR]),  # Note this is passed in
+            'Label' : p_key.kdf.bl_label.get_strbuf(),  # Note this is passed in
         }
 
         bl_dec_kdk_ctx['Msg'] = get_composed_msg(bl_dec_kdk_ctx['Label'], '', L, is_hex)
@@ -1290,7 +1290,7 @@ def do_kdf_params_t234(dk, params, kdf_list):
             kdk_to_use = fw_dec_kdk_params['KDK']
             fw_dec_kdk_ctx = {
                 "KDK"   : kdk_to_use,
-                "Label" : hex_to_str(kdf_list[KdfArg.FWSTR]),  # Note this is passed in
+                "Label" : p_key.kdf.fw_label.get_strbuf(),  # Note this is passed in
             }
 
             fw_dec_kdk_ctx['Msg'] = get_composed_msg(fw_dec_kdk_ctx['Label'], '', L, is_hex)
@@ -1318,7 +1318,7 @@ def do_kdf_params_t234(dk, params, kdf_list):
     return ([dec_kdk_ctx['KDK'] + dec_kdk_ctx['KDD'], dec_kdk_ctx["Msg"],
             bl_dec_kdk_ctx["Msg"], kdk_ctx["Msg"], dk_ctx["Msg"]])
 
-def do_kdf(params_slist, kdf_list):
+def do_kdf(params_slist, kdf_list, p_key):
     base_name = script_dir + 'v3_kdf_' + pid
     raw_name = base_name + '.raw'
     result_name = base_name + '.tag'
@@ -1382,8 +1382,12 @@ def do_derive_dk(dk, params, kdf_list, p_key):
 
     if dk in dk_list:
         if p_key.kdf.deviceid.is_t234() == True:
-            params_slist = do_kdf_params_t234(dk, params, kdf_list)
-            return do_kdf(params_slist, kdf_list)
+            params_slist = do_kdf_params_t234(dk, params, kdf_list, p_key)
+            return do_kdf(params_slist, kdf_list, p_key)
+        else:
+            from tegrasign_v3_nvkey_load import do_kdf_params
+            return do_kdf_params(dk, params, kdf_list)
+
     raise tegrasign_exception('Can not derive %s' % (dk))
 
 def do_kdf_params_oem_t234(dk, params, kdf_list, p_key):
@@ -1538,6 +1542,40 @@ def do_kdf_oem_enc(kdf_list, p_key, blockSize):
             if dk not in dk_list:
                 raise tegrasign_exception('Can not derive %s' % (dk))
 
+            # pad back iv if it needs to be randomly generated,
+            if p_key.kdf.rdm_iv and p_key.kdf.iv_off.is_valid() \
+                and p_key.kdf.iv_sz.is_valid():
+                offset = int.from_bytes(p_key.kdf.iv_off.get_hexbuf(),  "little")
+                size = int.from_bytes(p_key.kdf.iv_sz.get_hexbuf(),  "little")
+                src[offset:offset+size] = random_gen(size)
+                p_key.kdf.iv.set_buf(src[offset:offset+size])
+
+            # pad back salt1 if it needs to be randomly generated,
+            if p_key.kdf.rdm_salt1 and p_key.kdf.salt1_off.is_valid() \
+                and p_key.kdf.salt1_sz.is_valid():
+                offset = int.from_bytes(p_key.kdf.salt1_off.get_hexbuf(),  "little")
+                size = int.from_bytes(p_key.kdf.salt1_sz.get_hexbuf(),  "little")
+                src[offset:offset+size] = random_gen(size)
+
+            # pad back salt2 if it needs to be randomly generated
+            if p_key.kdf.rdm_salt2 and p_key.kdf.salt2_off.is_valid() \
+                and p_key.kdf.salt2_sz.is_valid():
+                offset = int.from_bytes(p_key.kdf.salt2_off.get_hexbuf(),  "little")
+                size = int.from_bytes(p_key.kdf.salt2_sz.get_hexbuf(),  "little")
+                src[offset:offset+size] = random_gen(size)
+
+            # pad back label if it needs to be randomly generated,
+            if p_key.kdf.rdm_label and p_key.kdf.label_off.is_valid() \
+                and p_key.kdf.label_sz.is_valid():
+                offset = int.from_bytes(p_key.kdf.label_off.get_hexbuf(),  "little")
+                size = int.from_bytes(p_key.kdf.label_sz.get_hexbuf(),  "little")
+                src[offset:offset+size] = random_gen(size)
+                p_key.kdf.label.set_buf(src[offset:offset+size])
+
+            aad_offset = int.from_bytes(p_key.kdf.aad_off.get_hexbuf(),  "little")
+            aad_size = int.from_bytes(p_key.kdf.aad_sz.get_hexbuf(),  "little")
+            p_key.kdf.aad.set_buf(src[aad_offset:aad_offset+aad_size])
+
             pay_off = int.from_bytes(p_key.kdf.pay_off.get_hexbuf(),  "little")
             pay_sz = int.from_bytes(p_key.kdf.pay_sz.get_hexbuf(),  "little")
 
@@ -1559,17 +1597,8 @@ def do_kdf_oem_enc(kdf_list, p_key, blockSize):
                 blockSize='262144'
                 info_print('encrypt compress image with block size '+blockSize)
 
-            # if user kdk is enabled, only params_slist[9] (DkMsg) is required.
-            if p_key.kdf.enc == 'USER_KDK':
-                do_kdf_with_user_kdk(params_slist[9], kdf_list, p_key, blockSize)
-            else:
-                if (do_kdf_oem(params_slist, params, kdf_list, p_key, blockSize, p_key.kdf.compress) == False):
-                    return False
-            # pad back
-            if p_key.kdf.rdm_iv:
-                offset = int.from_bytes(p_key.kdf.iv_off.get_hexbuf(),  "little")
-                size = int.from_bytes(p_key.kdf.iv_sz.get_hexbuf(),  "little")
-                src[offset:offset+size] = p_key.kdf.iv.get_hexbuf()[:]
+            if (do_kdf_oem(params_slist, params, kdf_list, p_key, blockSize, p_key.kdf.compress) == False):
+                return False
 
             tag_off = int.from_bytes(p_key.kdf.tag_off.get_hexbuf(),  "little")
             # pad the tag and encrypted buffer
@@ -1603,76 +1632,6 @@ def do_kdf_oem_enc(kdf_list, p_key, blockSize):
     with open(final_file, 'wb') as f:
         f.write(src)
     return True
-
-def do_kdf_with_user_kdk(DkMsgStr, kdf_list, p_key, blockSize):
-    DkMsg = str_to_hex(DkMsgStr)
-    p_key.key.aeskey = do_hmac_sha256(DkMsg, len(DkMsg), p_key)
-    p_key.block_size = int(blockSize)
-
-    iv  = p_key.kdf.iv.get_hexbuf()
-    aad  = p_key.kdf.aad.get_hexbuf()
-    tag  = p_key.kdf.tag.get_hexbuf()
-
-    if (type(p_key.kdf.verify) == int):
-        verify_bytes = p_key.kdf.verify
-    else:
-        verify_bytes = len(p_key.kdf.verify) + 1
-
-    if p_key.block_size == 0:
-        kdf_list[KdfArg.SRC] = do_aes_gcm(kdf_list[KdfArg.SRC], len(kdf_list[KdfArg.SRC]), p_key, iv, aad, tag, verify_bytes, True)
-        kdf_list[KdfArg.TAG] = p_key.kdf.tag.get_hexbuf()
-        return
-
-    # Use block_size to do metablob encryption
-    iv_off = 0
-    iv_size = 12
-    tag_off = 12
-    tag_size = 16
-    dgt_off = 28
-    dgt_size = 64
-    blob_sz = iv_size + tag_size + dgt_size
-
-    last_blk_len = p_key.len % p_key.block_size
-    blk_cnt = int(p_key.len / p_key.block_size) + (1 if (last_blk_len != 0) else 0)
-    blob_alloc_sz = blob_sz * (blk_cnt + 1)
-    blob_buf = bytearray(blob_alloc_sz)
-
-    # Get ramdom strings
-    p_key.ran.size = iv_size
-    p_key.ran.count = blk_cnt - 1 # Use p_key's IV for the first itereation
-    p_key.Sha = Sha._512
-    do_random(p_key)
-
-    # write blk_cnt to the first blob
-    blob_buf[0:4] = int_2bytes(4, blk_cnt)
-
-    for i in range(blk_cnt):
-        if i+1 == blk_cnt:
-            p_key.len = last_blk_len
-        else:
-            p_key.len = p_key.block_size
-
-        start = i * p_key.block_size
-        end = start + p_key.len
-
-        kdf_list[KdfArg.SRC][start:end] = do_aes_gcm(kdf_list[KdfArg.SRC][start:end], p_key.len, p_key, iv, aad, tag, verify_bytes, True)
-        buff = bytearray(hashlib.sha512(kdf_list[KdfArg.SRC][start:end]).digest())
-
-        # Start writing to the 2nd blob b/c first blob has the blk_cnt
-        start = (i+1) * blob_sz
-        end = start + iv_size
-        blob_buf[start+iv_off:start+iv_off+iv_size] = p_key.kdf.iv.get_hexbuf()
-        blob_buf[start+tag_off:start+tag_off+tag_size] = p_key.kdf.tag.get_hexbuf()
-        blob_buf[start+dgt_off:start+dgt_off+dgt_size] = buff[:]
-
-        # Get iv for the next itereation
-        start = i * iv_size
-        end = start + iv_size
-        p_key.kdf.iv.set_buf(p_key.ran.buf[start:end])
-
-    p_key.len = len(p_key.src_buf)
-    # Save blob to the tag field
-    p_key.kdf.tag.set_buf(blob_buf)
 
 def find_oemkey_file(p_key):
     if p_key.kdf.deviceid.is_t234():
@@ -1830,11 +1789,6 @@ def do_kdf_oem(params_slist, params, kdf_list, p_key, blockSize, isCompress):
     result_name = base_name + '.tag'
     raw_file = open_file(raw_name, 'wb')
 
-    if p_key.kdf.rdm_iv:
-        # update the iv portion of aad
-        p_key.kdf.update_aad()
-        kdf_list[KdfArg.AAD] = p_key.kdf.aad.get_hexbuf()
-
     # to write to file
     # order: sizes then data for: deckdk_kdkkdd, deckdk_iv, deckdk_aad, sbk_plain, deckdk_msg, tzkdk_msg, gpkdk_msg,
     #        kdk_msg, dk_msg, iv, aad, tag, src, flag, result_name
@@ -1877,6 +1831,9 @@ def do_kdf_oem(params_slist, params, kdf_list, p_key, blockSize, isCompress):
 
     if isCompress == 'TRUE':
         command.extend(['--iscompressed'])
+
+    if p_key.kdf.enc == 'USER_KDK':
+        command.extend(['--isUserKdk'])
 
     ret_str = run_command(command)
 

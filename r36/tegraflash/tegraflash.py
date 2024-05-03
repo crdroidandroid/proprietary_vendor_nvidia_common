@@ -87,7 +87,7 @@ exports = {
             "--mb1_bin":None, "--psc_bl1_bin":None,
             "--rcmboot_pt_layout": None, "--coldboot_pt_layout": None, "--rcmboot_bct_cfg": None,
             "--coldboot_bct_cfg": None, "--duk": None, "--dce_base_dtb": None, "--dce_overlay_dtb": None,
-            "--iv": "RANDOM"
+            "--iv": "RANDOM", "--no_flash": False, "--compress": None,
           }
 
 exit_on_error = False
@@ -112,7 +112,7 @@ def usage():
     '                    [--boot_chain <A|B>] [--bct_backup]',
     '                    [--mb1_bin] [--psc_bl1_bin], [--dry_run]'
     '                    [--coldboot_pt_layout], [--rcmboot_pt_layout], [--coldboot_bct_cfg], [--rcmboot_bct_cfg], [--duk]'
-    '                    [--dce_base_dtb], [--dce_overlay_dtb], [--disable_random_iv]'
+    '                    [--dce_base_dtb], [--dce_overlay_dtb], [--disable_random_iv], [--no_flash], [--compress <image_type>]',
 
     '   ',
     '   --bct           : Bootrom Boot Config Table file',
@@ -193,6 +193,8 @@ def usage():
     '   --mb1_bin       : mb1 bootloader binary to download to bootrom in RCM',
     '   --psc_bl1_bin   : psc_bl1 binary to download to bootrom in RCM',
     '   --disable_random_iv : Disable random iv generation so iv is default to all 0',
+    '   --no_flash      : No flash; Works with rcmboot; Will generate RCM blob. No need to attach hardware',
+    '   --compress      : a partition needs to be compressed',
     '   '
     ]))
 
@@ -1297,7 +1299,8 @@ if __name__ == '__main__':
                "trim_bpmp_dtb", "cpubl=", "concat_cpubl_bldtb", "external_device", "sparseupdate", "ratchet_blob=",
                "applet_softfuse=", "boot_chain=", "bct_backup",
                "mb1_bin=", "psc_bl1_bin=", "rcmboot_pt_layout=", "coldboot_pt_layout=", "rcmboot_bct_cfg=", "coldboot_bct_cfg=",
-               "duk=", "dce_base_dtb=", "dce_overlay_dtb=", "dry_run", "enable_mods", "X", "disable_random_iv"]
+               "duk=", "dce_base_dtb=", "dce_overlay_dtb=", "dry_run", "enable_mods", "X", "disable_random_iv", "no_flash",
+               "compress="]
 
     try:
       opts, args = getopt.getopt(sys.argv[1:], "h", options)
@@ -1346,6 +1349,9 @@ if __name__ == '__main__':
 
     if '--disable_random_iv' in sys.argv[1:]:
         exports['--iv'] = None
+
+    if '--no_flash' in sys.argv[1:]:
+        exports['--no_flash'] = True
 
     abs_path = ['--bct', '--rcm_bct', '--cfg', '--bl', '--hostbin', '--key', '--encrypt_key', '--out', '--dtb', '--bldtb', '--kerneldtb',
                 '--nct', '--applet', '--fb', '--lnx', '--tos', '--eks', '--wb', '--bpfdtb', '--applet_softfuse',

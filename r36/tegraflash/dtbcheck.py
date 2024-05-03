@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
 #
-# Copyright (c) 2019-2023, NVIDIA CORPORATION. All rights reserved.
+# SPDX-FileCopyrightText: Copyright (c) 2019-2024 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# SPDX-License-Identifier: LicenseRef-NvidiaProprietary
 #
-# NVIDIA CORPORATION and its licensors retain all intellectual property
-# and proprietary rights in and to this software, related documentation
-# and any modifications thereto.  Any use, reproduction, disclosure or
-# distribution of this software and related documentation without an express
-# license agreement from NVIDIA CORPORATION is strictly prohibited.
+# NVIDIA CORPORATION, its affiliates and licensors retain all intellectual
+# property and proprietary rights in and to this material, related
+# documentation and any modifications thereto. Any use, reproduction,
+# disclosure or distribution of this material and related documentation
+# without an express license agreement from NVIDIA CORPORATION or
+# its affiliates is strictly prohibited.
+#
 
 import argparse
 import os
@@ -1369,7 +1372,7 @@ def __check_pdomains(node):
     # BPMPDTB-PDOMAINS-3
     __check_u32(node, 'no-powergate-on-boot', required=False)
 
-def __check_pdomains_domain(node):
+def __check_pdomains_domain_t194(node):
     # BPMPDTB-PDOMAINS-4
     __check_props(node,
             required=['id'],
@@ -1388,6 +1391,24 @@ def __check_pdomains_domain(node):
     __check_u32(node, 'initial', required=False)
     # BPMPDTB-PDOMAINS-10
     __check_u32(node, 'target', required=False)
+
+def __check_pdomains_domain_t23x(node):
+    # BPMPDTB-PDOMAINS-11
+    __check_props(node,
+            required=['id'],
+            optional=['always-off', 'always-on', 'initiators'])
+    # BPMPDTB-PDOMAINS-12
+    __check_children(node)
+
+    # BPMPDTB-PDOMAINS-13
+    __check_u32(node, 'id')
+
+    # BPMPDTB-PDOMAINS-14
+    __check_u32(node, 'always-off', required=False)
+    # BPMPDTB-PDOMAINS-15
+    __check_u32(node, 'always-on', required=False)
+    # BPMPDTB-PDOMAINS-16
+    __check_u32(node, 'initiators', required=False)
 
 def __check_regulator_dummy(node):
     # BPMPDTB-REGULATORS-17
@@ -2146,7 +2167,7 @@ def __main():
                 FdtRule('acl', __check_mail_acl),
             ]),
             FdtRule('pdomains', __check_pdomains, subrules=[
-                FdtRule('domain@.+', __check_pdomains_domain),
+                FdtRule('domain@.+', __check_pdomains_domain_t194),
             ]),
             FdtRule('regulators', __check_regulators, subrules=[
                 FdtRule('.+', __check_regulators_node),
@@ -2213,7 +2234,7 @@ def __main():
                 FdtRule('acl', __check_mail_acl),
             ]),
             FdtRule('pdomains', __check_pdomains, subrules=[
-                FdtRule('domain@.+', __check_pdomains_domain),
+                FdtRule('domain@.+', __check_pdomains_domain_t23x),
             ]),
             FdtRule('regulators', __check_regulators, subrules=[
                 FdtRule('.+', __check_regulators_node),
