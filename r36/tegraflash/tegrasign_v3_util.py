@@ -1,7 +1,7 @@
 from __future__ import print_function
 
 #
-# Copyright (c) 2018-2023, NVIDIA Corporation.  All Rights Reserved.
+# Copyright (c) 2018-2024, NVIDIA Corporation.  All Rights Reserved.
 #
 # NVIDIA Corporation and its licensors retain all intellectual property
 # and proprietary rights in and to this software, related documentation
@@ -33,6 +33,8 @@ NV_COORDINATE_SIZE  = 64
 
 NV_ECC_SIG_STRUCT_SIZE = 96
 NV_ECC521_SIG_STRUCT_SIZE = 136
+ECC_KEY_SIZE = 32
+ECC521_KEY_SIZE = 68
 ED25519_KEY_SIZE = 32
 ED25519_SIG_SIZE = 64
 XMSS_KEY_SIZE = 132

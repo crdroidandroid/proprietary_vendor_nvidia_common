@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# Copyright (c) 2018-2023, NVIDIA Corporation.  All Rights Reserved.
+# Copyright (c) 2018-2024, NVIDIA Corporation.  All Rights Reserved.
 #
 # NVIDIA Corporation and its licensors retain all intellectual property
 # and proprietary rights in and to this software, related documentation
@@ -76,7 +76,7 @@ def parse_cmdline(commandLine):
     parser.add_argument("--length", help="Specify the length of the data to be signed or omit to specify the entire data", default=0)
     parser.add_argument("--list",   help="Specify a XML file that contains a list of files to be signed, or file=<concatenated bin> meta=<offset length>", nargs='+', metavar='FILE',)
     parser.add_argument("--offset", help="Specify the start of the data to be signed", default=0)
-    parser.add_argument("--pubkeyhash", help="Specify the files to save public key and hash. 1) <public key> [hash file] when --key <private key> is used. 2) <public key> <hash file> <rsa|eddsa> when --key <private key> is not used. Note in this case the public key is specific format and the key type flag is required", metavar='FILE', nargs='*')
+    parser.add_argument("--pubkeyhash", help="Specify the files to save public key and hash. 1) <public key> [hash file] when --key <private key> is used. 2) <public key> <hash file> <rsa|ecdsa|eddsa> when --key <private key> is not used. Note in this case the public key is specific format and the key type flag is required", metavar='FILE', nargs='*')
     parser.add_argument("--sha",    help="Compute sha hash for sha256 or sha512", choices=['sha256', 'sha512'])
     parser.add_argument("--enc", help="Set encryption, or skip in case of non-zero sbk", choices=[None, 'skip', 'aescbc', 'aesgcm'])
     parser.add_argument("--aad", help="Specify aad for aesgcm using 'random' or hex string without '0x'", metavar='AAD', default=0)
@@ -192,6 +192,7 @@ def extract_key(p_key, keyfilename, internal):
 Based on the mode passed in, parse the public key of the expected format
     For RSA: openssl pem format which starts with 'Modulus='
     For EDDSA: openssl der format
+    For ECC: openssl pem format
 and create tegra-style pubkey file for save_public_key_hash() usage
 '''
 def extract_pubkey(p_key, internal):
@@ -227,6 +228,45 @@ def extract_pubkey(p_key, internal):
             lines = bytearray(fr.read())
             pub_bytes = lines[12:]
             fw.write(pub_bytes)
+
+    elif p_key.mode == NvTegraSign_ECC:
+        # To align with the format/value of ECC_KEY_SIZE and ECC521_KEY_SIZE in tegraopenssl
+        if ((pk_filesize/2) == ECC_KEY_SIZE) or ((pk_filesize/2 + 2) == ECC521_KEY_SIZE):
+            # Assume the pk passed in is from tegrasign
+            p_key.pk_file = pk
+            return 1
+
+        # Note: pubkey.key format expected is created from:
+        # openssl ec -in ecp_key.pem -pubout -text -noout > pubkey.key
+        with open(pk, 'r') as fr, open(p_key.pk_file, 'wb') as fw:
+            lines = fr.read()
+            start = lines.index('pub:') + len('pub:')
+            end = lines.index('ASN1')
+            pub_content = lines[start:end].strip()
+            # remove unnecessary symbols and start the key content after the 1st byte with content of '04'
+            pub_bytes = bytes.fromhex(pub_content[len('04:'):].replace("\n", "").replace("\t", "").replace(" ", "").replace(":", ""))
+            size = len(pub_bytes)
+            if (size == (ECC_KEY_SIZE * 2)):
+                key_size = ECC_KEY_SIZE
+            elif (size == ((ECC521_KEY_SIZE -2 ) * 2)):
+                # Real ecp521 key size is 66
+                # tegra-style format has 2 bytes '0' padding
+                key_size = ECC521_KEY_SIZE
+            else:
+                info_print('Non-supported key format: %s' %(pk))
+                return 0
+            half_size = int(size/2)
+            dest_pub_bytes = bytearray(key_size * 2)
+            begin_half = pub_bytes[:half_size]
+            end_half = pub_bytes[half_size:]
+            r_begin_half = begin_half[::-1]
+            r_end_half = end_half[::-1]
+            # For ecp256, half_size = key_size.
+            # For ecp521, half_size = (key_size - 2). The last 2 bytes is 0 padding.
+            dest_pub_bytes[0:0 + len(r_begin_half)] = r_begin_half
+            dest_pub_bytes[key_size:key_size + len(r_end_half)] = r_end_half
+            fw.write(dest_pub_bytes)
+
     else:
         info_print('Non-supported key format: %s' %(pk))
         return 0

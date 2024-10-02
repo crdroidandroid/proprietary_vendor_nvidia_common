@@ -1,5 +1,6 @@
 #
-# Copyright (c) 2014-2024, NVIDIA Corporation.  All Rights Reserved.
+# SPDX-FileCopyrightText: Copyright (c) 2014-2024, NVIDIA Corporation.  All Rights Reserved.
+# SPDX-License-Identifier: LicenseRef-NvidiaProprietary
 #
 # NVIDIA Corporation and its licensors retain all intellectual property
 # and proprietary rights in and to this software, related documentation
@@ -65,6 +66,10 @@ class TFlashT23x_Base(object):
         '--mb1_cold_boot_bct': None,
         '--membct_cold_boot': None,
         '--membct_rcm': None,
+        '--membct_rcm_0': None,
+        '--membct_rcm_1': None,
+        '--membct_rcm_2': None,
+        '--membct_rcm_3': None,
         '--rcm_bct': None,
         '--signed_list': 'bct_list_signed.xml',
         '--updated': False,
@@ -131,6 +136,12 @@ class TFlashT23x_Base(object):
         # Fixed BCH offsets
         self.bch_length = None
         self.bch_offset = ''
+
+        # rcmboot_blob and rcmdump_blob
+        self.rcmboot_blob_dir = 'rcmboot_blob'
+        self.rcmboot_cmd_file = 'rcmbootcmd.txt'
+        self.rcmdump_blob_dir = 'rcmdump_blob'
+        self.rcmdump_cmd_file = 'rcmdumpcmd.txt'
 
     def _is_header_present(self, file_path):
         file_size = os.path.getsize(file_path)
@@ -1001,7 +1012,32 @@ class TFlashT23x_Base(object):
         self.tegraflash_flash_partitions(values['--skipsanitize'])
         info_print('Secure Flashing completed\n')
 
-    def tegraflash_send_to_bootrom(self):
+    def tegraflash_generate_rcmdump_blob(self, cmd_list = [], binary_list = []):
+        # Create a blob directory. If exists, clear all files
+        abs_outdir = tegraflash_abs_path(self.rcmdump_blob_dir)
+        if os.path.exists(abs_outdir):
+            shutil.rmtree(abs_outdir, ignore_errors=True)
+        os.makedirs(abs_outdir)
+
+        self.tegraflash_append_rcmdump_blob(cmd_list, binary_list)
+        info_print("rcmdump files are saved in " + self.rcmdump_blob_dir + " folder")
+
+    def tegraflash_append_rcmdump_blob(self, cmd_list = [], binary_list = []):
+        abs_outdir = tegraflash_abs_path(self.rcmdump_blob_dir)
+
+        with open(self.rcmdump_cmd_file, 'a') as f:
+            for cmd in cmd_list:
+                f.write(cmd)
+                f.write('\n')
+        f.close()
+        shutil.copyfile(self.rcmdump_cmd_file, abs_outdir + "/" + self.rcmdump_cmd_file)
+        info_print(self.rcmdump_cmd_file + ' is copied to ' + self.rcmdump_blob_dir + " folder")
+
+        for bin in binary_list:
+            shutil.copyfile(bin, abs_outdir + "/" + bin)
+            info_print(bin + ' is copied to ' + self.rcmdump_blob_dir + " folder")
+
+    def tegraflash_send_to_bootrom(self, gen_blob_only = False):
         global uidlog
         # non-secure case generate bct at run time
         if values['--securedev'] and not self.tegrabct_values['--updated']:
@@ -1021,7 +1057,8 @@ class TFlashT23x_Base(object):
         else:
             info_print(psc_bl1_bin + " filename is from --psc_bl1_bin")
 
-        info_print('Boot Rom communication')
+        if gen_blob_only == False:
+            info_print('Boot Rom communication')
         command = self.exec_file('tegrarcm')
         command.extend(['--new_session'])
         command.extend(['--chip', values['--chip'], values['--chip_major']])
@@ -1031,8 +1068,17 @@ class TFlashT23x_Base(object):
         command.extend(['--download', 'psc_bl1', psc_bl1_bin])
         command.extend(['--download', 'bct_mb1', self.tegrabct_values['--mb1_bct']])
 
-        uidlog = run_command(command, True)
-        info_print('Boot Rom communication completed')
+        # if gen_blob_only is True, generate rcmdump_blob only (no running of command)
+        if gen_blob_only == True:
+            dumpcmd = ' '.join(command)
+            dumpcmd = "./" + dumpcmd
+            chkcmd = 'if [ $? -ne 0 ]; then exit 1; fi;'
+            self.tegraflash_generate_rcmdump_blob([dumpcmd, chkcmd],
+                                                  [self.tegrabct_values['--bct'], mb1_bin, psc_bl1_bin,
+                                                   self.tegrabct_values['--mb1_bct']])
+        else:
+            uidlog = run_command(command, True)
+            info_print('Boot Rom communication completed')
 
     def tegraflash_send_to_bootloader(self, sign_images = True, is_coldboot = False, mb2_is_fskp=False):
         self.tegraflash_generate_blob(sign_images, 'blob.bin', is_coldboot, mb2_is_fskp)
@@ -1055,7 +1101,7 @@ class TFlashT23x_Base(object):
         if boot_type == 'recovery':
             self.tegraflash_poll_applet_bl()
 
-    def tegraflash_send_mb2_applet(self):
+    def tegraflash_send_mb2_applet(self, gen_blob_only = False):
         filename = None
         bins = values['--bins'].split(';')
         for binary in bins:
@@ -1073,17 +1119,27 @@ class TFlashT23x_Base(object):
         else:
             filename = self.tegraflash_oem_sign_file(filename, 'MB2A')
 
-        info_print('Sending mb2_applet...\n')
+        if gen_blob_only == False:
+            info_print('Sending mb2_applet...\n')
         command = self.exec_file('tegrarcm')
         command.extend(['--chip', values['--chip'], values['--chip_major']])
         command.extend(['--pollbl'])
         command.extend(['--download', 'applet', filename])
-        run_command(command)
-        info_print('completed')
 
-    def tegraflash_boot_mb2_applet(self):
-        filename = self.tegraflash_send_mb2_applet()
-        #self.tegraflash_boot('recovery')
+        # if gen_blob_only is True, generate rcmdump_blob only (no running of command)
+        if gen_blob_only == True:
+            dumpcmd = ' '.join(command)
+            dumpcmd = "./" + dumpcmd
+            chkcmd = 'if [ $? -ne 0 ]; then exit 2; fi;'
+            self.tegraflash_append_rcmdump_blob([dumpcmd, chkcmd], [filename])
+        else:
+            run_command(command)
+            info_print('completed')
+
+    def tegraflash_boot_mb2_applet(self, gen_blob_only = False):
+        filename = self.tegraflash_send_mb2_applet(gen_blob_only)
+        if gen_blob_only:
+            return
 
         count = 30
         while count != 0 and not self.check_is_mb2applet():
@@ -1312,27 +1368,24 @@ class TFlashT23x_Base(object):
         run_command(command)
         time.sleep(2)
 
-    def tegraflash_rcmboot_blob(self, cmd_list = [], binary_list = []):
-        rcm_blob_dir = 'rcm_blob'
-        rcm_cmds_file = 'rcmcmd.txt'
-
+    def tegraflash_generate_rcmboot_blob(self, cmd_list = [], binary_list = []):
         # Create a blob directory. If exists, clear all files
-        output_dir = tegraflash_abs_path(rcm_blob_dir)
+        output_dir = tegraflash_abs_path(self.rcmboot_blob_dir)
         if os.path.exists(output_dir):
             shutil.rmtree(output_dir, ignore_errors=True)
         os.makedirs(output_dir)
 
-        with open(rcm_cmds_file, 'w') as f:
+        with open(self.rcmboot_cmd_file, 'w') as f:
             for cmd in cmd_list:
                 f.write(cmd)
                 f.write('\n')
         f.close()
-        shutil.copyfile(rcm_cmds_file, output_dir + "/" + rcm_cmds_file)
+        shutil.copyfile(self.rcmboot_cmd_file, output_dir + "/" + self.rcmboot_cmd_file)
 
         for bin in binary_list:
             shutil.copyfile(bin, output_dir + "/" + bin)
 
-        info_print("All RCM required files are saved in " + rcm_blob_dir + " folder")
+        info_print("All RCM required files are saved in " + self.rcmboot_blob_dir + " folder")
 
     def tegraflash_rcmboot(self, args):
         global start_time
@@ -1405,10 +1458,10 @@ class TFlashT23x_Base(object):
                 rcmcmd_2 = "./" + rcmcmd_2
 
                 # Create a rcmboot blob
-                self.tegraflash_rcmboot_blob(
+                self.tegraflash_generate_rcmboot_blob(
                         [rcmcmd_1, rcmcmd_2],
                         [values['--bct'], mb1_bin, psc_bl1_bin, values['--mb1_bct'],
-                         'blob.bin', values['--mem_bct']])
+                        'blob.bin', values['--mem_bct']])
             else:
                 run_command(command)
 
@@ -1949,7 +2002,7 @@ class TFlashT23x_Base(object):
 
         signed_file = os.path.splitext(
             signed_file)[0] + os.path.splitext(signed_file)[1]
-        newname = signed_file.replace('_aligned', '')
+        newname = signed_file.replace('_aligned', '', 1)
         shutil.copyfile(signed_file, newname)
         signed_file = newname
         return signed_file
@@ -2250,27 +2303,31 @@ class TFlashT23x_Base(object):
                 self.tegrabct_values['--membct_cold_boot'] = self.tegraflash_oem_sign_file(
                     'mem_coldboot.bct', 'MEMB')
         else:
-            chip_info = tegraflash_abs_path(
-                self.tegrarcm_values['--chip_info'])
-            # Select 1 bct based on RAMCODE
-
-            if os.path.isfile(chip_info):
-                ramcode = self.tegraflash_get_ramcode(chip_info)
-                os.remove(chip_info)
+            info_print("Generating mem_bct based on ramcode group number")
+            if values['--ramcode'] is not None:
+                info_print("Got ramcode " + values['--ramcode'] + " from the command line")
+                ramcode = int(values['--ramcode']) >> 2
             else:
-                chip_info_bak = tegraflash_abs_path(
-                    self.tegrarcm_values['--chip_info'] + '_bak')
-                if os.path.exists(chip_info_bak):
-                    info_print(
-                        "Reading ramcode from backup chip_info.bin file")
-                    ramcode = self.tegraflash_get_ramcode(chip_info_bak)
-                else:
-                    if values['--ramcode'] is None:
-                        ramcode = 0
-                    else:
-                        ramcode = int(values['--ramcode']) >> 2
+                chip_info = tegraflash_abs_path(
+                    self.tegrarcm_values['--chip_info'])
+                # Select 1 bct based on RAMCODE
 
-            info_print("Using ramcode " + str(ramcode))
+                if os.path.isfile(chip_info):
+                    ramcode = self.tegraflash_get_ramcode(chip_info)
+                    os.remove(chip_info)
+                else:
+                    chip_info_bak = tegraflash_abs_path(
+                        self.tegrarcm_values['--chip_info'] + '_bak')
+                    if os.path.exists(chip_info_bak):
+                        info_print(
+                            "Reading ramcode from backup chip_info.bin file")
+                        ramcode = self.tegraflash_get_ramcode(chip_info_bak)
+                    else:
+                        info_print("Set ramcode to 0 as it is not specified")
+                        ramcode = 0
+
+            # Note: the ramcode after here is actually the ramcode group.
+            info_print("Using ramcode group number " + str(ramcode))
 
             if bool(values['--trim_bpmp_dtb']) == False:
                 info_print("Disabled BPMP dtb trim, using default dtb")
@@ -2287,6 +2344,28 @@ class TFlashT23x_Base(object):
                 shutil.copyfile(mem_bcts[ramcode], 'mem_rcm.bct')
                 self.tegrabct_values['--membct_rcm'] = self.tegraflash_oem_sign_file(
                     'mem_rcm.bct', 'MEM' + str(ramcode))
+
+            info_print("Generating all 4 mem_bct for ramcode group (0..3)")
+            for ramcode in range(0, 4):
+                if bool(values['--trim_bpmp_dtb']) == False:
+                    info_print("Disabled BPMP dtb trim, using default dtb")
+                    info_print("")
+                else:
+                    if "bpmp_fw_dtb" in values['--bins']:
+                        self.tegraflash_bpmp_generate_dtb(ramcode)
+
+                if values['--encrypt_key'] is not None:
+                    mem_rcm_bct = 'mem_rcm_' + str(ramcode) + '.bct'
+                    shutil.copyfile(mem_bcts[ramcode], mem_rcm_bct)
+                    membct_rcm = '--membct_rcm_' + str(ramcode)
+                    self.tegrabct_values[membct_rcm] = self.tegraflash_oem_enc_and_sign_file(
+                        mem_rcm_bct, 'MEM' +  str(ramcode))
+                else:
+                    mem_rcm_bct = 'mem_rcm_' + str(ramcode) + '.bct'
+                    shutil.copyfile(mem_bcts[ramcode], mem_rcm_bct)
+                    membct_rcm = '--membct_rcm_' + str(ramcode)
+                    self.tegrabct_values[membct_rcm] = self.tegraflash_oem_sign_file(
+                        mem_rcm_bct, 'MEM' + str(ramcode))
 
     def tegraflash_update_images(self):
         info_print('Copying signatures')
@@ -2721,9 +2800,13 @@ class TFlashT23x_Base(object):
                 self.tegraflash_sign_images()
             self.tegraflash_generate_bct()
             self.tegraflash_update_images()
-            self.tegraflash_send_to_bootrom()
-
-            self.tegraflash_boot_mb2_applet()
+            if dump_args[0] == 'gen_blob':
+                self.tegraflash_send_to_bootrom(True)
+                self.tegraflash_boot_mb2_applet(True)
+                return
+            else:
+                self.tegraflash_send_to_bootrom()
+                self.tegraflash_boot_mb2_applet()
 
         if self.check_is_mb2applet():
             if dump_args[0] == 'eeprom':
@@ -3014,7 +3097,10 @@ class TFlashT23x_Base(object):
         if self.tegrabct_values['--mb1_cold_boot_bct'] is not None:
             shutil.copyfile(self.tegrabct_values['--mb1_cold_boot_bct'], output_dir + "/" + self.tegrabct_values['--mb1_cold_boot_bct'])
 
-        file_list = [values['--mb2_bct'], values['--mb2_cold_boot_bct'], self.tegrabct_values['--membct_rcm'], self.tegrabct_values['--membct_cold_boot']]
+        file_list = [values['--mb2_bct'], values['--mb2_cold_boot_bct'], self.tegrabct_values['--membct_rcm'], self.tegrabct_values['--membct_cold_boot'],
+                self.tegrabct_values['--membct_rcm_0'], self.tegrabct_values['--membct_rcm_1'],
+                self.tegrabct_values['--membct_rcm_2'], self.tegrabct_values['--membct_rcm_3']]
+
         for _file in file_list:
             if _file is not None and os.path.isfile(_file):
                 shutil.copyfile(_file, output_dir + "/" + _file)

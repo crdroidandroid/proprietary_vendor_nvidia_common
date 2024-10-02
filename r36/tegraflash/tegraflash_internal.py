@@ -1,5 +1,6 @@
 #
-# Copyright (c) 2014-2023, NVIDIA Corporation.  All Rights Reserved.
+# SPDX-FileCopyrightText: Copyright (c) 2014-2024, NVIDIA Corporation.  All Rights Reserved.
+# SPDX-License-Identifier: LicenseRef-NvidiaProprietary
 #
 # NVIDIA Corporation and its licensors retain all intellectual property
 # and proprietary rights in and to this software, related documentation
@@ -4232,24 +4233,25 @@ def tegraflash_get_ramcode():
     if ramcode >= 0:
         return
 
-    # Get the ramocode from chip_info.bin
-    chip_info = tegraflash_abs_path(tegrarcm_values['--chip_info'])
-    if os.path.isfile(chip_info):
-        info_print("Reading ramcode from chip_info.bin file")
-        ramcode = tegraflash_get_ramcode_from_file(chip_info)
-        os.remove(chip_info)
+    if values['--ramcode'] is not None:
+        info_print("Got ramcode " + values['--ramcode'] + " from the command line")
+        ramcode = int(values['--ramcode'])
     else:
-        chip_info_bak = tegraflash_abs_path(tegrarcm_values['--chip_info'] + '_bak')
-        if os.path.exists(chip_info_bak):
-            info_print("Reading ramcode from backup chip_info.bin file")
-            ramcode = tegraflash_get_ramcode_from_file(chip_info_bak)
-            os.remove(chip_info_bak)
-        elif values['--ramcode'] is not None:
-            info_print("Got ramcode " + values['--ramcode'] + " from the command line")
-            ramcode = int(values['--ramcode'])
+        # Get the ramocode from chip_info.bin
+        chip_info = tegraflash_abs_path(tegrarcm_values['--chip_info'])
+        if os.path.isfile(chip_info):
+            info_print("Reading ramcode from chip_info.bin file")
+            ramcode = tegraflash_get_ramcode_from_file(chip_info)
+            os.remove(chip_info)
         else:
-            info_print("Using default ramcode: 0")
-            ramcode = 0
+            chip_info_bak = tegraflash_abs_path(tegrarcm_values['--chip_info'] + '_bak')
+            if os.path.exists(chip_info_bak):
+                info_print("Reading ramcode from backup chip_info.bin file")
+                ramcode = tegraflash_get_ramcode_from_file(chip_info_bak)
+                os.remove(chip_info_bak)
+            else:
+                info_print("Using default ramcode: 0")
+                ramcode = 0
 
 def tegraflash_trim_bpmp_fw_dtb(bpmd_file=None):
     global ramcode
