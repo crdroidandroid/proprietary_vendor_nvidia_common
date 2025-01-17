@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# Copyright (c) 2014-2023, NVIDIA Corporation.  All Rights Reserved.
+# Copyright (c) 2014-2024, NVIDIA Corporation.  All Rights Reserved.
 #
 # NVIDIA Corporation and its licensors retain all intellectual property
 # and proprietary rights in and to this software, related documentation
@@ -80,7 +80,7 @@ exports = {
             "--soft_fuses":None, "--deviceprod_config":None, "--rcm_bct":None, "--secureboot":False,
             "--mem_bct":None, "--mem_bct_cold_boot":None, "--minratchet_config":None,
             "--wb0sdram_config":None, "--blversion":None, "--output_dir":None, "--nv_nvratchet":"0",
-            "--nv_oemratchet":"0", "--image_dirs":None, "--trim_bpmp_dtb":False, "--cpubl":None,
+            "--nv_oemratchet":"0", "--image_dirs":None, "--trim_bpmp_dtb":False, "--cpubl":None, "--cpubl_rcm":None,
             "--concat_cpubl_bldtb":False, "--external_device":False, "--cust_info": None,
             "--fuse_info": None, "--sparseupdate": False, "--ratchet_blob":None, "--applet_softfuse":None,
             "--boot_chain":None, "--bct_backup":False, "--dry_run": False,
@@ -179,6 +179,7 @@ def usage():
     '   --image_dirs    : Comma separated list of directories for the binary image files',
     '   --trim_bpmp_dtb : Remove unused emc strap data from BPMP dtb',
     '   --cpubl         : CPU Bootloader File',
+    '   --cpubl_rcm     : CPU Bootloader File for rcmboot',
     '   --concat_cpubl_bldtb : Concatenate CPU Bootloader and its DTB file',
     '   --external_device: Generate images for an external device',
     '   --odmdata       : ODMDATA to write into BCT (Usage for T194 and before)',
@@ -1296,7 +1297,7 @@ if __name__ == '__main__':
                "encrypt_key=", "enable_user_kdk", "nv_key=", "nvencrypt_key=", "cl=", "soft_fuses=", "cust_info=", "fuse_info=",
                "deviceprod_config=", "rcm_bct=","mem_bct=", "mem_bct_cold_boot=", "mb1_cold_boot_bct=", "wb0sdram_config=",
                "minratchet_config=", "blversion=", "output_dir=", "nv_nvratchet=", "nv_oemratchet=", "image_dirs=",
-               "trim_bpmp_dtb", "cpubl=", "concat_cpubl_bldtb", "external_device", "sparseupdate", "ratchet_blob=",
+               "trim_bpmp_dtb", "cpubl=", "cpubl_rcm=", "concat_cpubl_bldtb", "external_device", "sparseupdate", "ratchet_blob=",
                "applet_softfuse=", "boot_chain=", "bct_backup",
                "mb1_bin=", "psc_bl1_bin=", "rcmboot_pt_layout=", "coldboot_pt_layout=", "rcmboot_bct_cfg=", "coldboot_bct_cfg=",
                "duk=", "dce_base_dtb=", "dce_overlay_dtb=", "dry_run", "enable_mods", "X", "disable_random_iv", "no_flash",

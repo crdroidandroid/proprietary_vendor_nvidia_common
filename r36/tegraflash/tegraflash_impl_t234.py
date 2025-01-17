@@ -2289,6 +2289,10 @@ class TFlashT23x_Base(object):
             command.extend(['--magicid', "MEMB"])
             command.extend(['--addsigheader_multi', mem_bcts[0],
                             mem_bcts[1], mem_bcts[2], mem_bcts[3]])
+            if values['--minratchet_config'] is not None:
+                self.tegraflash_generate_ratchet_blob()
+                command.extend(['--ratchet_blob',
+                    self.tegrahost_values['--ratchet_blob']])
             run_command(command)
             os.rename(filename + '_1_sigheader.bct', 'mem_coldboot.bct')
             if values['--encrypt_key'] is not None:
@@ -3077,7 +3081,6 @@ class TFlashT23x_Base(object):
                     binaries.extend([tags[1]])
 
         if values['--tegraflash_v2'] and values['--bl']:
-            values['--bl'] = self.tegraflash_concat_partition('A_cpu-bootloader', values['--cpubl'])
             if values['--encrypt_key'] is None:
                 values['--bl'] = self.tegraflash_oem_sign_file(values['--bl'], 'CPBL', 'bootloader_stage2')
             else:
@@ -3477,6 +3480,11 @@ class TFlashT23x_Base(object):
         shutil.copyfile(cpubl_bin_file, cpubl_with_dtb)
         concat_file(cpubl_with_dtb, bl_dtb_file)  # order: outfile, infile
         values['--cpubl'] = cpubl_with_dtb
+
+        if values['--cpubl_rcm'] is not None:
+            values['--bl'] = self.tegraflash_concat_partition('A_cpu-bootloader', values['--cpubl_rcm'])
+        else:
+            values['--bl'] = values['--cpubl']
 
     def get_dcebin_filename(self):
         dce_bin_file = None
