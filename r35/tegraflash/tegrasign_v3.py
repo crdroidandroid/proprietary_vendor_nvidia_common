@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# Copyright (c) 2018-2023, NVIDIA Corporation.  All Rights Reserved.
+# Copyright (c) 2018-2024, NVIDIA Corporation.  All Rights Reserved.#
 #
 # NVIDIA Corporation and its licensors retain all intellectual property
 # and proprietary rights in and to this software, related documentation
@@ -579,7 +579,7 @@ def tegrasign(args_file, args_getmode, args_getmont, args_key, args_length, args
                 # Extract pubkey if algo is specified, else take in as-is
                 if len(internal["--pubkeyhash"]) == 3:
                     extract_pubkey(p_key, internal)
-                    save_public_key_hash(p_key, internal) #chia
+                    save_public_key_hash(p_key, internal)
                 else:
                     info_print('--pubkeyhash flag is missing %d argument(s) since --key is not used'
                         %(len(internal["--pubkeyhash"])-3))

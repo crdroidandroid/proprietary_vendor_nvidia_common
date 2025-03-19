@@ -1,5 +1,6 @@
 #
-# Copyright (c) 2014-2023, NVIDIA Corporation.  All Rights Reserved.
+# SPDX-FileCopyrightText: Copyright (c) 2014-2025, NVIDIA Corporation.  All Rights Reserved.
+# SPDX-License-Identifier: LicenseRef-NvidiaProprietary
 #
 # NVIDIA Corporation and its licensors retain all intellectual property
 # and proprietary rights in and to this software, related documentation
@@ -1882,7 +1883,7 @@ class TFlashT23x_Base(object):
         run_command(command)
 
         if is_aligned:
-            newname = signed_file.replace('_aligned', '')
+            newname = signed_file.replace('_aligned', '', 1)
             shutil.copyfile(signed_file, newname)
             signed_file = newname
         return signed_file
@@ -1944,7 +1945,7 @@ class TFlashT23x_Base(object):
             xml_tree = ElementTree.parse(file)
             mode = xml_tree.getroot().get('mode')
 
-            for file_nodes in xml_tree.getiterator('file'):
+            for file_nodes in xml_tree.iter('file'):
                 filename = file_nodes.get('name')
                 meta_blob_sz = int(file_nodes.get('meta_blob_size'))
                 enc_file = self.tegraflash_oem_enc(filename, bct_flag, meta_blob_sz)
@@ -2011,6 +2012,10 @@ class TFlashT23x_Base(object):
             command.extend(['--magicid', "MEMB"])
             command.extend(['--addsigheader_multi', mem_bcts[0],
                             mem_bcts[1], mem_bcts[2], mem_bcts[3]])
+            if values['--minratchet_config'] is not None:
+                self.tegraflash_generate_ratchet_blob()
+                command.extend(['--ratchet_blob',
+                    self.tegrahost_values['--ratchet_blob']])
             run_command(command)
             os.rename(filename + '_1_sigheader.bct', 'mem_coldboot.bct')
             if values['--encrypt_key'] is not None:
@@ -2025,25 +2030,27 @@ class TFlashT23x_Base(object):
                 self.tegrabct_values['--membct_cold_boot'] = self.tegraflash_oem_sign_file(
                     'mem_coldboot.bct', 'MEMB')
         else:
-            chip_info = tegraflash_abs_path(
-                self.tegrarcm_values['--chip_info'])
-            # Select 1 bct based on RAMCODE
-
-            if os.path.isfile(chip_info):
-                ramcode = self.tegraflash_get_ramcode(chip_info)
-                os.remove(chip_info)
+            if values['--ramcode'] is not None:
+                info_print("Got ramcode " + values['--ramcode'] + " from the command line")
+                ramcode = int(values['--ramcode']) >> 2
             else:
-                chip_info_bak = tegraflash_abs_path(
-                    self.tegrarcm_values['--chip_info'] + '_bak')
-                if os.path.exists(chip_info_bak):
-                    info_print(
-                        "Reading ramcode from backup chip_info.bin file")
-                    ramcode = self.tegraflash_get_ramcode(chip_info_bak)
+                chip_info = tegraflash_abs_path(
+                    self.tegrarcm_values['--chip_info'])
+                # Select 1 bct based on RAMCODE
+
+                if os.path.isfile(chip_info):
+                    ramcode = self.tegraflash_get_ramcode(chip_info)
+                    os.remove(chip_info)
                 else:
-                    if values['--ramcode'] is None:
-                        ramcode = 0
+                    chip_info_bak = tegraflash_abs_path(
+                        self.tegrarcm_values['--chip_info'] + '_bak')
+                    if os.path.exists(chip_info_bak):
+                        info_print(
+                            "Reading ramcode from backup chip_info.bin file")
+                        ramcode = self.tegraflash_get_ramcode(chip_info_bak)
                     else:
-                        ramcode = int(values['--ramcode']) >> 2
+                        info_print("Set ramcode to 0 as it is not specified")
+                        ramcode = 0
 
             info_print("Using ramcode " + str(ramcode))
 
