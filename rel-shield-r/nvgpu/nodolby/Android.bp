@@ -1,0 +1,15 @@
+filegroup {
+  name: "libnvhwcomposer_64-srcs",
+  srcs: ["lib64/libnvhwcomposer.so"],
+}
+
+cc_defaults {
+  name: "libnvhwcomposer_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvhwcomposer_64-srcs"],
+      shared_libs: ["liblog", "libcutils", "libEGL", "libGLESv3", "libhardware", "libhidlbase", "libnvblit", "libnvcolorutil", "libnvddk_vic", "libnvgr", "libnvrm_chip", "libnvrm_host1x", "libnvrm_mem", "libnvrm_surface", "libnvrm_sync", "libnvos", "libui", "libnvimp", "libsync", "libutils", "vendor.nvidia.hardware.graphics.display@1.0", "vendor.nvidia.hardware.graphics.mempool@1.0", "libmempoollocal", "libcuda", "libtlk_secure_hdcp_up", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+

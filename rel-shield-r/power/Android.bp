@@ -1,0 +1,60 @@
+filegroup {
+  name: "vendor.nvidia.hardware.power@1.0-service_32-srcs",
+  srcs: ["bin32/hw/vendor.nvidia.hardware.power@1.0-service"],
+}
+
+cc_defaults {
+  name: "vendor.nvidia.hardware.power@1.0-service_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":vendor.nvidia.hardware.power@1.0-service_32-srcs"],
+      shared_libs: ["liblog", "libutils", "libcutils", "libhardware", "libhidlbase", "android.hardware.power@1.0", "vendor.nvidia.hardware.power@1.0", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "vendor.nvidia.hardware.power@1.0-service_64-srcs",
+  srcs: ["bin64/hw/vendor.nvidia.hardware.power@1.0-service"],
+}
+
+cc_defaults {
+  name: "vendor.nvidia.hardware.power@1.0-service_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":vendor.nvidia.hardware.power@1.0-service_64-srcs"],
+      shared_libs: ["liblog", "libutils", "libcutils", "libhardware", "libhidlbase", "android.hardware.power@1.0", "vendor.nvidia.hardware.power@1.0", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "powerhal.tegra_64-srcs",
+  srcs: ["lib64/hw/powerhal.tegra.so"],
+}
+
+cc_defaults {
+  name: "powerhal.tegra_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":powerhal.tegra_64-srcs"],
+      shared_libs: ["libcutils", "liblog", "libexpat", "libhidlbase", "libutils", "libnvphs", "android.hardware.power@1.0", "vendor.nvidia.hardware.power@1.0", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "powerhal.tegra_32-srcs",
+  srcs: ["lib/hw/powerhal.tegra.so"],
+}
+
+cc_defaults {
+  name: "powerhal.tegra_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":powerhal.tegra_32-srcs"],
+      shared_libs: ["libcutils", "liblog", "libexpat", "libhidlbase", "libutils", "libnvphs", "android.hardware.power@1.0", "vendor.nvidia.hardware.power@1.0", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+

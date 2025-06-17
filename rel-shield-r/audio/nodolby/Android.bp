@@ -1,0 +1,15 @@
+filegroup {
+  name: "audio.primary.tegra_32-srcs",
+  srcs: ["lib/hw/audio.primary.tegra.so"],
+}
+
+cc_defaults {
+  name: "audio.primary.tegra_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":audio.primary.tegra_32-srcs"],
+      shared_libs: ["libcutils", "libutils", "libtinyalsa", "libtinycompress", "libaudioutils", "libexpat", "libbinder", "libnvos", "liblog", "libhardware", "libxml2", "libprocessgroup", "libnvoice", "libnbaio_mono", "libnvaudiofx", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+

@@ -1,0 +1,1170 @@
+filegroup {
+  name: "vendor.nvidia.hardware.graphics.composer@2.0-service_64-srcs",
+  srcs: ["bin64/hw/vendor.nvidia.hardware.graphics.composer@2.0-service"],
+}
+
+cc_defaults {
+  name: "vendor.nvidia.hardware.graphics.composer@2.0-service_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":vendor.nvidia.hardware.graphics.composer@2.0-service_64-srcs"],
+      shared_libs: ["libbase", "libbinder", "libcutils", "libfmq", "libhardware", "libhidlbase", "liblog", "libsync", "libutils", "vendor.nvidia.hardware.graphics.display@1.0", "vendor.nvidia.hardware.graphics.display@1.0-impl", "vendor.nvidia.hardware.graphics.mempool@1.0", "vendor.nvidia.hardware.graphics.mempool@1.0-impl", "android.hardware.graphics.mapper@2.0", "android.hardware.graphics.composer@2.1", "android.hardware.graphics.composer@2.2", "libnvhwcomposer", "vendor.nvidia.hardware.graphics.composer@2.0", "vendor.nvidia.hardware.graphics.composer@2.0-impl", "android.hardware.graphics.mapper@3.0", "android.hardware.graphics.composer@2.1-resources-v34", "android.hardware.graphics.composer@2.2-resources", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "vendor.nvidia.hardware.graphics.composer@2.0-service_32-srcs",
+  srcs: ["bin32/hw/vendor.nvidia.hardware.graphics.composer@2.0-service"],
+}
+
+cc_defaults {
+  name: "vendor.nvidia.hardware.graphics.composer@2.0-service_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":vendor.nvidia.hardware.graphics.composer@2.0-service_32-srcs"],
+      shared_libs: ["libbase", "libbinder", "libcutils", "libfmq", "libhardware", "libhidlbase", "liblog", "libsync", "libutils", "vendor.nvidia.hardware.graphics.display@1.0", "vendor.nvidia.hardware.graphics.display@1.0-impl", "vendor.nvidia.hardware.graphics.mempool@1.0", "vendor.nvidia.hardware.graphics.mempool@1.0-impl", "android.hardware.graphics.mapper@2.0", "android.hardware.graphics.composer@2.1", "android.hardware.graphics.composer@2.2", "libnvhwcomposer", "vendor.nvidia.hardware.graphics.composer@2.0", "vendor.nvidia.hardware.graphics.composer@2.0-impl", "android.hardware.graphics.mapper@3.0", "android.hardware.graphics.composer@2.1-resources-v34", "android.hardware.graphics.composer@2.2-resources", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "vendor.nvidia.hardware.graphics.composer@2.0-impl_64-srcs",
+  srcs: ["lib64/vendor.nvidia.hardware.graphics.composer@2.0-impl.so"],
+}
+
+cc_defaults {
+  name: "vendor.nvidia.hardware.graphics.composer@2.0-impl_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":vendor.nvidia.hardware.graphics.composer@2.0-impl_64-srcs"],
+      shared_libs: ["android.hardware.graphics.mapper@2.0", "android.hardware.graphics.composer@2.1", "android.hardware.graphics.composer@2.2", "libbase", "libcutils", "libfmq", "libhardware", "libhidlbase", "libnvhwcomposer", "liblog", "libsync", "libutils", "vendor.nvidia.hardware.graphics.composer@2.0", "vendor.nvidia.hardware.graphics.display@1.0", "android.hardware.graphics.mapper@3.0", "android.hardware.graphics.composer@2.1-resources-v34", "android.hardware.graphics.composer@2.2-resources", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "vendor.nvidia.hardware.graphics.display@1.0-impl_64-srcs",
+  srcs: ["lib64/vendor.nvidia.hardware.graphics.display@1.0-impl.so"],
+}
+
+cc_defaults {
+  name: "vendor.nvidia.hardware.graphics.display@1.0-impl_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":vendor.nvidia.hardware.graphics.display@1.0-impl_64-srcs"],
+      shared_libs: ["libhidlbase", "liblog", "libnvhwcomposer", "libutils", "vendor.nvidia.hardware.graphics.display@1.0", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "vendor.nvidia.hardware.graphics.mempool@1.0-impl_64-srcs",
+  srcs: ["lib64/vendor.nvidia.hardware.graphics.mempool@1.0-impl.so"],
+}
+
+cc_defaults {
+  name: "vendor.nvidia.hardware.graphics.mempool@1.0-impl_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":vendor.nvidia.hardware.graphics.mempool@1.0-impl_64-srcs"],
+      shared_libs: ["libbase", "libcutils", "libfmq", "libhardware", "libhidlbase", "liblog", "libsync", "libutils", "vendor.nvidia.hardware.graphics.mempool@1.0", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "vendor.nvidia.hardware.graphics.composer@2.0-impl_32-srcs",
+  srcs: ["lib/vendor.nvidia.hardware.graphics.composer@2.0-impl.so"],
+}
+
+cc_defaults {
+  name: "vendor.nvidia.hardware.graphics.composer@2.0-impl_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":vendor.nvidia.hardware.graphics.composer@2.0-impl_32-srcs"],
+      shared_libs: ["android.hardware.graphics.mapper@2.0", "android.hardware.graphics.composer@2.1", "android.hardware.graphics.composer@2.2", "libbase", "libcutils", "libfmq", "libhardware", "libhidlbase", "libnvhwcomposer", "liblog", "libsync", "libutils", "vendor.nvidia.hardware.graphics.composer@2.0", "vendor.nvidia.hardware.graphics.display@1.0", "android.hardware.graphics.mapper@3.0", "android.hardware.graphics.composer@2.1-resources-v34", "android.hardware.graphics.composer@2.2-resources", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "vendor.nvidia.hardware.graphics.display@1.0-impl_32-srcs",
+  srcs: ["lib/vendor.nvidia.hardware.graphics.display@1.0-impl.so"],
+}
+
+cc_defaults {
+  name: "vendor.nvidia.hardware.graphics.display@1.0-impl_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":vendor.nvidia.hardware.graphics.display@1.0-impl_32-srcs"],
+      shared_libs: ["libhidlbase", "liblog", "libnvhwcomposer", "libutils", "vendor.nvidia.hardware.graphics.display@1.0", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "vendor.nvidia.hardware.graphics.mempool@1.0-impl_32-srcs",
+  srcs: ["lib/vendor.nvidia.hardware.graphics.mempool@1.0-impl.so"],
+}
+
+cc_defaults {
+  name: "vendor.nvidia.hardware.graphics.mempool@1.0-impl_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":vendor.nvidia.hardware.graphics.mempool@1.0-impl_32-srcs"],
+      shared_libs: ["libbase", "libcutils", "libfmq", "libhardware", "libhidlbase", "liblog", "libsync", "libutils", "vendor.nvidia.hardware.graphics.mempool@1.0", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "gralloc.tegra_64-srcs",
+  srcs: ["lib64/hw/gralloc.tegra.so"],
+}
+
+cc_defaults {
+  name: "gralloc.tegra_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":gralloc.tegra_64-srcs"],
+      shared_libs: ["liblog", "libcutils", "libnvgr", "libnvos", "libnvrm_chip", "libnvrm_host1x", "libnvrm_mem", "libnvrm_surface", "libnvblit", "libnvcolorutil", "libsync", "libhardware", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "vulkan.tegra_64-srcs",
+  srcs: ["lib64/hw/vulkan.tegra.so"],
+}
+
+cc_defaults {
+  name: "vulkan.tegra_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":vulkan.tegra_64-srcs"],
+      shared_libs: ["liblog", "libEGL", "libutils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "gralloc.tegra_32-srcs",
+  srcs: ["lib/hw/gralloc.tegra.so"],
+}
+
+cc_defaults {
+  name: "gralloc.tegra_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":gralloc.tegra_32-srcs"],
+      shared_libs: ["liblog", "libcutils", "libnvgr", "libnvos", "libnvrm_chip", "libnvrm_host1x", "libnvrm_mem", "libnvrm_surface", "libnvblit", "libnvcolorutil", "libsync", "libhardware", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "vulkan.tegra_32-srcs",
+  srcs: ["lib/hw/vulkan.tegra.so"],
+}
+
+cc_defaults {
+  name: "vulkan.tegra_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":vulkan.tegra_32-srcs"],
+      shared_libs: ["liblog", "libEGL", "libutils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libEGL_tegra_64-srcs",
+  srcs: ["lib64/egl/libEGL_tegra.so"],
+}
+
+cc_defaults {
+  name: "libEGL_tegra_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libEGL_tegra_64-srcs"],
+      shared_libs: ["libsync", "libcutils", "libz", "liblog", "libc++", "libc", "libm", "libdl", "libnvglsi", "libnvrm_chip", "libnvrm_host1x", "libnvrm_surface", "libnvrm_sync", "libnvos", "libnvcpl_vendor", "libnvphs", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libGLESv1_CM_tegra_64-srcs",
+  srcs: ["lib64/egl/libGLESv1_CM_tegra.so"],
+}
+
+cc_defaults {
+  name: "libGLESv1_CM_tegra_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libGLESv1_CM_tegra_64-srcs"],
+      shared_libs: ["libnvos", "libglcore", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libGLESv2_tegra_64-srcs",
+  srcs: ["lib64/egl/libGLESv2_tegra.so"],
+}
+
+cc_defaults {
+  name: "libGLESv2_tegra_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libGLESv2_tegra_64-srcs"],
+      shared_libs: ["libnvos", "libglcore", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libdolbycontrol_64-srcs",
+  srcs: ["lib64/libdolbycontrol.so"],
+}
+
+cc_defaults {
+  name: "libdolbycontrol_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libdolbycontrol_64-srcs"],
+      shared_libs: ["liblog", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libglcore_64-srcs",
+  srcs: ["lib64/libglcore.so"],
+}
+
+cc_defaults {
+  name: "libglcore_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libglcore_64-srcs"],
+      shared_libs: ["libcutils", "libutils", "libhardware", "libnvrm_mem", "libnvrm_surface", "libnvrmvkif", "libutilscallstack", "libz", "liblog", "libc++", "libc", "libm", "libdl", "libnvidia-glvkspirv", "libnvrmapi_tegra", "libnvrm_gpu", "libnvos", "libnvcpl_vendor", "libnvgr", "libnvglsi", "libnvrm_host1x", "libnvdc", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libmempoollocal_64-srcs",
+  srcs: ["lib64/libmempoollocal.so"],
+}
+
+cc_defaults {
+  name: "libmempoollocal_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libmempoollocal_64-srcs"],
+      shared_libs: ["libbase", "libcutils", "libfmq", "libhardware", "libhidlbase", "liblog", "libnvos", "libsync", "libutils", "vendor.nvidia.hardware.graphics.mempool@1.0", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvblit_64-srcs",
+  srcs: ["lib64/libnvblit.so"],
+}
+
+cc_defaults {
+  name: "libnvblit_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvblit_64-srcs"],
+      shared_libs: ["libhardware", "liblog", "libnvddk_vic", "libnvos", "libnvrm_gpu", "libnvrm_mem", "libnvrm_surface", "libnvrm_sync", "libnvgr", "libsync", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvddk_2d_v2_64-srcs",
+  srcs: ["lib64/libnvddk_2d_v2.so"],
+}
+
+cc_defaults {
+  name: "libnvddk_2d_v2_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvddk_2d_v2_64-srcs"],
+      shared_libs: ["libnvrm_host1x", "libnvrm_mem", "libnvrm_stream", "libnvrm_surface", "libnvos", "libnvcolorutil", "libnvddk_vic", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvddk_vic_64-srcs",
+  srcs: ["lib64/libnvddk_vic.so"],
+}
+
+cc_defaults {
+  name: "libnvddk_vic_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvddk_vic_64-srcs"],
+      shared_libs: ["liblog", "libnvos", "libnvrm_chip", "libnvrm_host1x", "libnvrm_mem", "libnvrm_stream", "libnvrm_sync", "libsync", "libnvgr", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvglsi_64-srcs",
+  srcs: ["lib64/libnvglsi.so"],
+}
+
+cc_defaults {
+  name: "libnvglsi_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvglsi_64-srcs"],
+      shared_libs: ["libcutils", "libz", "liblog", "libc++", "libc", "libm", "libdl", "libnvrmapi_tegra", "libnvos", "libnvrm_mem", "libnvrm_sync", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvgr_64-srcs",
+  srcs: ["lib64/libnvgr.so"],
+}
+
+cc_defaults {
+  name: "libnvgr_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvgr_64-srcs"],
+      shared_libs: ["libhardware", "libcutils", "liblog", "libsync", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvidia-glvkspirv_64-srcs",
+  srcs: ["lib64/libnvidia-glvkspirv.so"],
+}
+
+cc_defaults {
+  name: "libnvidia-glvkspirv_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvidia-glvkspirv_64-srcs"],
+      shared_libs: ["libcutils", "libutils", "libz", "liblog", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvidia-ptxjitcompiler_64-srcs",
+  srcs: ["lib64/libnvidia-ptxjitcompiler.so"],
+}
+
+cc_defaults {
+  name: "libnvidia-ptxjitcompiler_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvidia-ptxjitcompiler_64-srcs"],
+      shared_libs: ["libz", "liblog", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvrmapi_tegra_64-srcs",
+  srcs: ["lib64/libnvrmapi_tegra.so"],
+}
+
+cc_defaults {
+  name: "libnvrmapi_tegra_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvrmapi_tegra_64-srcs"],
+      shared_libs: ["libz", "liblog", "libc++", "libc", "libm", "libdl", "libnvrm_gpu", "libnvrm_chip", "libnvrm_host1x", "libnvrm_mem", "libnvrm_surface", "libnvrm_sync", "libnvos", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvrm_chip_64-srcs",
+  srcs: ["lib64/libnvrm_chip.so"],
+}
+
+cc_defaults {
+  name: "libnvrm_chip_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvrm_chip_64-srcs"],
+      shared_libs: ["libnvos", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvrm_gpu_64-srcs",
+  srcs: ["lib64/libnvrm_gpu.so"],
+}
+
+cc_defaults {
+  name: "libnvrm_gpu_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvrm_gpu_64-srcs"],
+      shared_libs: ["libnvos", "libnvrm_mem", "libnvsocsys", "libnvrm_sync", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvrm_host1x_64-srcs",
+  srcs: ["lib64/libnvrm_host1x.so"],
+}
+
+cc_defaults {
+  name: "libnvrm_host1x_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvrm_host1x_64-srcs"],
+      shared_libs: ["libnvos", "libnvrm_chip", "libnvrm_mem", "liblog", "libsync", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvrm_mem_64-srcs",
+  srcs: ["lib64/libnvrm_mem.so"],
+}
+
+cc_defaults {
+  name: "libnvrm_mem_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvrm_mem_64-srcs"],
+      shared_libs: ["libnvos", "libnvsocsys", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvrm_stream_64-srcs",
+  srcs: ["lib64/libnvrm_stream.so"],
+}
+
+cc_defaults {
+  name: "libnvrm_stream_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvrm_stream_64-srcs"],
+      shared_libs: ["libnvos", "libnvrm_mem", "libnvrm_sync", "liblog", "libsync", "libnvrm_host1x", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvrm_surface_64-srcs",
+  srcs: ["lib64/libnvrm_surface.so"],
+}
+
+cc_defaults {
+  name: "libnvrm_surface_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvrm_surface_64-srcs"],
+      shared_libs: ["libnvos", "libnvrm_chip", "libnvrm_mem", "libnvrm_sync", "libz", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvrm_sync_64-srcs",
+  srcs: ["lib64/libnvrm_sync.so"],
+}
+
+cc_defaults {
+  name: "libnvrm_sync_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvrm_sync_64-srcs"],
+      shared_libs: ["libcutils", "libnvos", "libnvrm_chip", "libnvrm_host1x", "libutils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvrmvkif_64-srcs",
+  srcs: ["lib64/libnvrmvkif.so"],
+}
+
+cc_defaults {
+  name: "libnvrmvkif_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvrmvkif_64-srcs"],
+      shared_libs: ["libcutils", "libutils", "liblog", "libnvos", "libhardware", "libnvrm_surface", "libnvrm_mem", "libnvgr", "android.hardware.graphics.common@1.2", "android.hardware.graphics.common-V1-ndk", "libnativewindow", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvwsi_64-srcs",
+  srcs: ["lib64/libnvwsi.so"],
+}
+
+cc_defaults {
+  name: "libnvwsi_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvwsi_64-srcs"],
+      shared_libs: ["libcutils", "libnvos", "libnvrm_chip", "libnvrm_mem", "libnvrm_surface", "libnvrm_sync", "libnvgr", "libhardware", "liblog", "libsync", "libnvcpl_vendor", "libnativewindow", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvcolorutil_64-srcs",
+  srcs: ["lib64/libnvcolorutil.so"],
+}
+
+cc_defaults {
+  name: "libnvcolorutil_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvcolorutil_64-srcs"],
+      shared_libs: ["libnvos", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvdc_64-srcs",
+  srcs: ["lib64/libnvdc.so"],
+}
+
+cc_defaults {
+  name: "libnvdc_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvdc_64-srcs"],
+      shared_libs: ["libcutils", "libnvos", "libnvrm_chip", "libnvrm_surface", "libnvrm_sync", "libnvimp", "liblog", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvimp_64-srcs",
+  srcs: ["lib64/libnvimp.so"],
+}
+
+cc_defaults {
+  name: "libnvimp_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvimp_64-srcs"],
+      shared_libs: ["libnvrm_chip", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libcuda_64-srcs",
+  srcs: ["lib64/libcuda.so"],
+}
+
+cc_defaults {
+  name: "libcuda_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libcuda_64-srcs"],
+      shared_libs: ["liblog", "libnvphs", "libz", "libc++", "libc", "libm", "libdl", "libnvrm_gpu", "libnvrm_sync", "libnvrm_mem", "libnvrm_host1x", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvcucompat_64-srcs",
+  srcs: ["lib64/libnvcucompat.so"],
+}
+
+cc_defaults {
+  name: "libnvcucompat_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvcucompat_64-srcs"],
+      shared_libs: ["liblog", "libnvphs", "libz", "libc++", "libc", "libm", "libdl", "libnvrm_gpu", "libnvrm_sync", "libnvrm_mem", "libnvrm_host1x", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvsocsys_64-srcs",
+  srcs: ["lib64/libnvsocsys.so"],
+}
+
+cc_defaults {
+  name: "libnvsocsys_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvsocsys_64-srcs"],
+      shared_libs: ["libnvos", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libtlk_secure_hdcp_up_64-srcs",
+  srcs: ["lib64/libtlk_secure_hdcp_up.so"],
+}
+
+cc_defaults {
+  name: "libtlk_secure_hdcp_up_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libtlk_secure_hdcp_up_64-srcs"],
+      shared_libs: ["libtsechdcp", "liblog", "libcutils", "libnvos", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libtsechdcp_64-srcs",
+  srcs: ["lib64/libtsechdcp.so"],
+}
+
+cc_defaults {
+  name: "libtsechdcp_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libtsechdcp_64-srcs"],
+      shared_libs: ["libnvos", "libnvrm_mem", "libnvrm_host1x", "libnvrm_stream", "liblog", "libcutils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libtsec_wrapper_64-srcs",
+  srcs: ["lib64/libtsec_wrapper.so"],
+}
+
+cc_defaults {
+  name: "libtsec_wrapper_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libtsec_wrapper_64-srcs"],
+      shared_libs: ["libnvos", "libnvrm_mem", "libnvrm_host1x", "libnvrm_stream", "liblog", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvsi_ll_2_64-srcs",
+  srcs: ["lib64/libnvsi_ll_2.so"],
+}
+
+cc_defaults {
+  name: "libnvsi_ll_2_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvsi_ll_2_64-srcs"],
+      shared_libs: ["libtsec_wrapper", "liblog", "libz", "libm", "libc", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libEGL_tegra_32-srcs",
+  srcs: ["lib/egl/libEGL_tegra.so"],
+}
+
+cc_defaults {
+  name: "libEGL_tegra_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libEGL_tegra_32-srcs"],
+      shared_libs: ["libsync", "libcutils", "libz", "liblog", "libc++", "libc", "libm", "libdl", "libnvglsi", "libnvrm_chip", "libnvrm_host1x", "libnvrm_surface", "libnvrm_sync", "libnvos", "libnvcpl_vendor", "libnvphs", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libGLESv1_CM_tegra_32-srcs",
+  srcs: ["lib/egl/libGLESv1_CM_tegra.so"],
+}
+
+cc_defaults {
+  name: "libGLESv1_CM_tegra_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libGLESv1_CM_tegra_32-srcs"],
+      shared_libs: ["libnvos", "libglcore", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libGLESv2_tegra_32-srcs",
+  srcs: ["lib/egl/libGLESv2_tegra.so"],
+}
+
+cc_defaults {
+  name: "libGLESv2_tegra_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libGLESv2_tegra_32-srcs"],
+      shared_libs: ["libnvos", "libglcore", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libdolbycontrol_32-srcs",
+  srcs: ["lib/libdolbycontrol.so"],
+}
+
+cc_defaults {
+  name: "libdolbycontrol_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libdolbycontrol_32-srcs"],
+      shared_libs: ["liblog", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libglcore_32-srcs",
+  srcs: ["lib/libglcore.so"],
+}
+
+cc_defaults {
+  name: "libglcore_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libglcore_32-srcs"],
+      shared_libs: ["libcutils", "libutils", "libhardware", "libnvrm_mem", "libnvrm_surface", "libnvrmvkif", "libutilscallstack", "libz", "liblog", "libc++", "libc", "libm", "libdl", "libnvidia-glvkspirv", "libnvrmapi_tegra", "libnvrm_gpu", "libnvos", "libnvcpl_vendor", "libnvgr", "libnvglsi", "libnvrm_host1x", "libnvdc", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libmempoollocal_32-srcs",
+  srcs: ["lib/libmempoollocal.so"],
+}
+
+cc_defaults {
+  name: "libmempoollocal_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libmempoollocal_32-srcs"],
+      shared_libs: ["libbase", "libcutils", "libfmq", "libhardware", "libhidlbase", "liblog", "libnvos", "libsync", "libutils", "vendor.nvidia.hardware.graphics.mempool@1.0", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvblit_32-srcs",
+  srcs: ["lib/libnvblit.so"],
+}
+
+cc_defaults {
+  name: "libnvblit_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvblit_32-srcs"],
+      shared_libs: ["libhardware", "liblog", "libnvddk_vic", "libnvos", "libnvrm_gpu", "libnvrm_mem", "libnvrm_surface", "libnvrm_sync", "libnvgr", "libsync", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvddk_2d_v2_32-srcs",
+  srcs: ["lib/libnvddk_2d_v2.so"],
+}
+
+cc_defaults {
+  name: "libnvddk_2d_v2_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvddk_2d_v2_32-srcs"],
+      shared_libs: ["libnvrm_host1x", "libnvrm_mem", "libnvrm_stream", "libnvrm_surface", "libnvos", "libnvcolorutil", "libnvddk_vic", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvddk_vic_32-srcs",
+  srcs: ["lib/libnvddk_vic.so"],
+}
+
+cc_defaults {
+  name: "libnvddk_vic_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvddk_vic_32-srcs"],
+      shared_libs: ["liblog", "libnvos", "libnvrm_chip", "libnvrm_host1x", "libnvrm_mem", "libnvrm_stream", "libnvrm_sync", "libsync", "libnvgr", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvglsi_32-srcs",
+  srcs: ["lib/libnvglsi.so"],
+}
+
+cc_defaults {
+  name: "libnvglsi_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvglsi_32-srcs"],
+      shared_libs: ["libcutils", "libz", "liblog", "libc++", "libc", "libm", "libdl", "libnvrmapi_tegra", "libnvos", "libnvrm_mem", "libnvrm_sync", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvgr_32-srcs",
+  srcs: ["lib/libnvgr.so"],
+}
+
+cc_defaults {
+  name: "libnvgr_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvgr_32-srcs"],
+      shared_libs: ["libhardware", "libcutils", "liblog", "libsync", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvidia-glvkspirv_32-srcs",
+  srcs: ["lib/libnvidia-glvkspirv.so"],
+}
+
+cc_defaults {
+  name: "libnvidia-glvkspirv_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvidia-glvkspirv_32-srcs"],
+      shared_libs: ["libcutils", "libutils", "libz", "liblog", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvidia-ptxjitcompiler_32-srcs",
+  srcs: ["lib/libnvidia-ptxjitcompiler.so"],
+}
+
+cc_defaults {
+  name: "libnvidia-ptxjitcompiler_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvidia-ptxjitcompiler_32-srcs"],
+      shared_libs: ["libz", "liblog", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvrmapi_tegra_32-srcs",
+  srcs: ["lib/libnvrmapi_tegra.so"],
+}
+
+cc_defaults {
+  name: "libnvrmapi_tegra_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvrmapi_tegra_32-srcs"],
+      shared_libs: ["libz", "liblog", "libc++", "libc", "libm", "libdl", "libnvrm_gpu", "libnvrm_chip", "libnvrm_host1x", "libnvrm_mem", "libnvrm_surface", "libnvrm_sync", "libnvos", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvrm_chip_32-srcs",
+  srcs: ["lib/libnvrm_chip.so"],
+}
+
+cc_defaults {
+  name: "libnvrm_chip_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvrm_chip_32-srcs"],
+      shared_libs: ["libnvos", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvrm_gpu_32-srcs",
+  srcs: ["lib/libnvrm_gpu.so"],
+}
+
+cc_defaults {
+  name: "libnvrm_gpu_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvrm_gpu_32-srcs"],
+      shared_libs: ["libnvos", "libnvrm_mem", "libnvsocsys", "libnvrm_sync", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvrm_host1x_32-srcs",
+  srcs: ["lib/libnvrm_host1x.so"],
+}
+
+cc_defaults {
+  name: "libnvrm_host1x_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvrm_host1x_32-srcs"],
+      shared_libs: ["libnvos", "libnvrm_chip", "libnvrm_mem", "liblog", "libsync", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvrm_mem_32-srcs",
+  srcs: ["lib/libnvrm_mem.so"],
+}
+
+cc_defaults {
+  name: "libnvrm_mem_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvrm_mem_32-srcs"],
+      shared_libs: ["libnvos", "libnvsocsys", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvrm_stream_32-srcs",
+  srcs: ["lib/libnvrm_stream.so"],
+}
+
+cc_defaults {
+  name: "libnvrm_stream_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvrm_stream_32-srcs"],
+      shared_libs: ["libnvos", "libnvrm_mem", "libnvrm_sync", "liblog", "libsync", "libnvrm_host1x", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvrm_surface_32-srcs",
+  srcs: ["lib/libnvrm_surface.so"],
+}
+
+cc_defaults {
+  name: "libnvrm_surface_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvrm_surface_32-srcs"],
+      shared_libs: ["libnvos", "libnvrm_chip", "libnvrm_mem", "libnvrm_sync", "libz", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvrm_sync_32-srcs",
+  srcs: ["lib/libnvrm_sync.so"],
+}
+
+cc_defaults {
+  name: "libnvrm_sync_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvrm_sync_32-srcs"],
+      shared_libs: ["libcutils", "libnvos", "libnvrm_chip", "libnvrm_host1x", "libutils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvrmvkif_32-srcs",
+  srcs: ["lib/libnvrmvkif.so"],
+}
+
+cc_defaults {
+  name: "libnvrmvkif_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvrmvkif_32-srcs"],
+      shared_libs: ["libcutils", "libutils", "liblog", "libnvos", "libhardware", "libnvrm_surface", "libnvrm_mem", "libnvgr", "android.hardware.graphics.common@1.2", "android.hardware.graphics.common-V1-ndk", "libnativewindow", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvwsi_32-srcs",
+  srcs: ["lib/libnvwsi.so"],
+}
+
+cc_defaults {
+  name: "libnvwsi_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvwsi_32-srcs"],
+      shared_libs: ["libcutils", "libnvos", "libnvrm_chip", "libnvrm_mem", "libnvrm_surface", "libnvrm_sync", "libnvgr", "libhardware", "liblog", "libsync", "libnvcpl_vendor", "libnativewindow", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvcolorutil_32-srcs",
+  srcs: ["lib/libnvcolorutil.so"],
+}
+
+cc_defaults {
+  name: "libnvcolorutil_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvcolorutil_32-srcs"],
+      shared_libs: ["libnvos", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvdc_32-srcs",
+  srcs: ["lib/libnvdc.so"],
+}
+
+cc_defaults {
+  name: "libnvdc_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvdc_32-srcs"],
+      shared_libs: ["libcutils", "libnvos", "libnvrm_chip", "libnvrm_surface", "libnvrm_sync", "libnvimp", "liblog", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvimp_32-srcs",
+  srcs: ["lib/libnvimp.so"],
+}
+
+cc_defaults {
+  name: "libnvimp_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvimp_32-srcs"],
+      shared_libs: ["libnvrm_chip", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libcuda_32-srcs",
+  srcs: ["lib/libcuda.so"],
+}
+
+cc_defaults {
+  name: "libcuda_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libcuda_32-srcs"],
+      shared_libs: ["liblog", "libnvphs", "libz", "libc++", "libc", "libm", "libdl", "libnvrm_gpu", "libnvrm_sync", "libnvrm_mem", "libnvrm_host1x", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvcucompat_32-srcs",
+  srcs: ["lib/libnvcucompat.so"],
+}
+
+cc_defaults {
+  name: "libnvcucompat_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvcucompat_32-srcs"],
+      shared_libs: ["liblog", "libnvphs", "libz", "libc++", "libc", "libm", "libdl", "libnvrm_gpu", "libnvrm_sync", "libnvrm_mem", "libnvrm_host1x", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvsocsys_32-srcs",
+  srcs: ["lib/libnvsocsys.so"],
+}
+
+cc_defaults {
+  name: "libnvsocsys_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvsocsys_32-srcs"],
+      shared_libs: ["libnvos", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libtlk_secure_hdcp_up_32-srcs",
+  srcs: ["lib/libtlk_secure_hdcp_up.so"],
+}
+
+cc_defaults {
+  name: "libtlk_secure_hdcp_up_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libtlk_secure_hdcp_up_32-srcs"],
+      shared_libs: ["libtsechdcp", "liblog", "libcutils", "libnvos", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libtsechdcp_32-srcs",
+  srcs: ["lib/libtsechdcp.so"],
+}
+
+cc_defaults {
+  name: "libtsechdcp_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libtsechdcp_32-srcs"],
+      shared_libs: ["libnvos", "libnvrm_mem", "libnvrm_host1x", "libnvrm_stream", "liblog", "libcutils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libtsec_wrapper_32-srcs",
+  srcs: ["lib/libtsec_wrapper.so"],
+}
+
+cc_defaults {
+  name: "libtsec_wrapper_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libtsec_wrapper_32-srcs"],
+      shared_libs: ["libnvos", "libnvrm_mem", "libnvrm_host1x", "libnvrm_stream", "liblog", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvsi_ll_2_32-srcs",
+  srcs: ["lib/libnvsi_ll_2.so"],
+}
+
+cc_defaults {
+  name: "libnvsi_ll_2_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvsi_ll_2_32-srcs"],
+      shared_libs: ["libtsec_wrapper", "liblog", "libz", "libm", "libc", "libdl", ],
+    },
+  },
+}
+

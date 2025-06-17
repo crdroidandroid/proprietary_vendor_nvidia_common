@@ -1,0 +1,15 @@
+filegroup {
+  name: "nvpmodel_64-srcs",
+  srcs: ["bin64/nvpmodel"],
+}
+
+cc_defaults {
+  name: "nvpmodel_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":nvpmodel_64-srcs"],
+      shared_libs: ["libnvsocsys-l4t", "libc.so.6", "ld-linux-aarch64.so.1", ],
+    },
+  },
+}
+

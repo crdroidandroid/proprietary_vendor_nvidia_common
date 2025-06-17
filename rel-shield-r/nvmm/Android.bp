@@ -1,0 +1,480 @@
+filegroup {
+  name: "libnvomxilclient_32-srcs",
+  srcs: ["lib/libnvomxilclient.so"],
+}
+
+cc_defaults {
+  name: "libnvomxilclient_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvomxilclient_32-srcs"],
+      shared_libs: ["libnvos", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvmm_audio_32-srcs",
+  srcs: ["lib/libnvmm_audio.so"],
+}
+
+cc_defaults {
+  name: "libnvmm_audio_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvmm_audio_32-srcs"],
+      shared_libs: ["libnvos", "libnvmm_utils", "libnvmm", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvmm_contentpipe_32-srcs",
+  srcs: ["lib/libnvmm_contentpipe.so"],
+}
+
+cc_defaults {
+  name: "libnvmm_contentpipe_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvmm_contentpipe_32-srcs"],
+      shared_libs: ["libnvos", "libnvrm_mem", "libnvmm_utils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvmmlite_audio_32-srcs",
+  srcs: ["lib/libnvmmlite_audio.so"],
+}
+
+cc_defaults {
+  name: "libnvmmlite_audio_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvmmlite_audio_32-srcs"],
+      shared_libs: ["libnvos", "libnvmmlite_utils", "libnvmmlite", "libnvmm_utils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvmmlite_image_32-srcs",
+  srcs: ["lib/libnvmmlite_image.so"],
+}
+
+cc_defaults {
+  name: "libnvmmlite_image_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvmmlite_image_32-srcs"],
+      shared_libs: ["libnvos", "libnvrm_mem", "libnvrm_host1x", "libnvrm_surface", "libnvmmlite_utils", "libnvmmlite", "libnvmm_utils", "libnvparser", "libnvtvmr", "libnvddk_2d_v2", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvmmlite_32-srcs",
+  srcs: ["lib/libnvmmlite.so"],
+}
+
+cc_defaults {
+  name: "libnvmmlite_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvmmlite_32-srcs"],
+      shared_libs: ["libnvos", "libnvmmlite_utils", "libnvmm_utils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvmmlite_msaudio_32-srcs",
+  srcs: ["lib/libnvmmlite_msaudio.so"],
+}
+
+cc_defaults {
+  name: "libnvmmlite_msaudio_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvmmlite_msaudio_32-srcs"],
+      shared_libs: ["libnvos", "libnvmmlite_utils", "libnvmmlite", "libnvmm_utils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvmmlite_utils_32-srcs",
+  srcs: ["lib/libnvmmlite_utils.so"],
+}
+
+cc_defaults {
+  name: "libnvmmlite_utils_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvmmlite_utils_32-srcs"],
+      shared_libs: ["libnvos", "libnvrm_mem", "libnvrm_surface", "libnvmm_utils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvmm_parser_32-srcs",
+  srcs: ["lib/libnvmm_parser.so"],
+}
+
+cc_defaults {
+  name: "libnvmm_parser_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvmm_parser_32-srcs"],
+      shared_libs: ["libnvmm_utils", "libnvos", "libnvrm_mem", "libnvmm_contentpipe", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvmm_32-srcs",
+  srcs: ["lib/libnvmm.so"],
+}
+
+cc_defaults {
+  name: "libnvmm_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvmm_32-srcs"],
+      shared_libs: ["libnvos", "libnvmm_utils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvmm_msaudio_32-srcs",
+  srcs: ["lib/libnvmm_msaudio.so"],
+}
+
+cc_defaults {
+  name: "libnvmm_msaudio_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvmm_msaudio_32-srcs"],
+      shared_libs: ["libnvos", "libnvmm", "libnvmm_utils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvmm_utils_32-srcs",
+  srcs: ["lib/libnvmm_utils.so"],
+}
+
+cc_defaults {
+  name: "libnvmm_utils_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvmm_utils_32-srcs"],
+      shared_libs: ["libnvos", "libnvrm_chip", "libnvrm_mem", "libnvrm_surface", "libcutils", "libnvavp", "liblog", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvmm_writer_32-srcs",
+  srcs: ["lib/libnvmm_writer.so"],
+}
+
+cc_defaults {
+  name: "libnvmm_writer_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvmm_writer_32-srcs"],
+      shared_libs: ["libnvmm_utils", "libnvos", "libnvrm_mem", "libnvmm_contentpipe", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvmedia_32-srcs",
+  srcs: ["lib/libnvmedia.so"],
+}
+
+cc_defaults {
+  name: "libnvmedia_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvmedia_32-srcs"],
+      shared_libs: ["libnvavp", "libnvtvmr", "libnvparser", "libnvos", "libnvrm_chip", "libnvrm_mem", "libnvrm_sync", "libEGL", "libnvddk_2d_v2", "libnvrm_host1x", "libnvrm_surface", "libnvsocsys", "libnvgr", "libcutils", "liblog", "libutils", "libhardware", "libnvdc", "libnvdla_runtime", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvtvmr_32-srcs",
+  srcs: ["lib/libnvtvmr.so"],
+}
+
+cc_defaults {
+  name: "libnvtvmr_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvtvmr_32-srcs"],
+      shared_libs: ["libnvsocsys", "libnvrm_mem", "libnvrm_sync", "libnvrm_stream", "libnvrm_host1x", "libnvrm_surface", "libnvos", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvtnr_32-srcs",
+  srcs: ["lib/libnvtnr.so"],
+}
+
+cc_defaults {
+  name: "libnvtnr_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvtnr_32-srcs"],
+      shared_libs: ["libnvos", "libnvrm_host1x", "libnvtvmr", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvparser_32-srcs",
+  srcs: ["lib/libnvparser.so"],
+}
+
+cc_defaults {
+  name: "libnvparser_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvparser_32-srcs"],
+      shared_libs: ["libnvrm_chip", "libnvos", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvavp_32-srcs",
+  srcs: ["lib/libnvavp.so"],
+}
+
+cc_defaults {
+  name: "libnvavp_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvavp_32-srcs"],
+      shared_libs: ["libnvos", "libnvrm_mem", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvdla_runtime_32-srcs",
+  srcs: ["lib/libnvdla_runtime.so"],
+}
+
+cc_defaults {
+  name: "libnvdla_runtime_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvdla_runtime_32-srcs"],
+      shared_libs: ["libnvos", "libnvrm_host1x", "libnvrm_mem", "libnvsocsys", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvmm_contentpipe_64-srcs",
+  srcs: ["lib64/libnvmm_contentpipe.so"],
+}
+
+cc_defaults {
+  name: "libnvmm_contentpipe_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvmm_contentpipe_64-srcs"],
+      shared_libs: ["libnvos", "libnvrm_mem", "libnvmm_utils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvmmlite_image_64-srcs",
+  srcs: ["lib64/libnvmmlite_image.so"],
+}
+
+cc_defaults {
+  name: "libnvmmlite_image_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvmmlite_image_64-srcs"],
+      shared_libs: ["libnvos", "libnvrm_mem", "libnvrm_host1x", "libnvrm_surface", "libnvmmlite_utils", "libnvmmlite", "libnvmm_utils", "libnvparser", "libnvtvmr", "libnvddk_2d_v2", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvmmlite_64-srcs",
+  srcs: ["lib64/libnvmmlite.so"],
+}
+
+cc_defaults {
+  name: "libnvmmlite_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvmmlite_64-srcs"],
+      shared_libs: ["libnvos", "libnvmmlite_utils", "libnvmm_utils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvmmlite_utils_64-srcs",
+  srcs: ["lib64/libnvmmlite_utils.so"],
+}
+
+cc_defaults {
+  name: "libnvmmlite_utils_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvmmlite_utils_64-srcs"],
+      shared_libs: ["libnvos", "libnvrm_mem", "libnvrm_surface", "libnvmm_utils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvmm_parser_64-srcs",
+  srcs: ["lib64/libnvmm_parser.so"],
+}
+
+cc_defaults {
+  name: "libnvmm_parser_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvmm_parser_64-srcs"],
+      shared_libs: ["libnvmm_utils", "libnvos", "libnvrm_mem", "libnvmm_contentpipe", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvmm_64-srcs",
+  srcs: ["lib64/libnvmm.so"],
+}
+
+cc_defaults {
+  name: "libnvmm_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvmm_64-srcs"],
+      shared_libs: ["libnvos", "libnvmm_utils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvmm_utils_64-srcs",
+  srcs: ["lib64/libnvmm_utils.so"],
+}
+
+cc_defaults {
+  name: "libnvmm_utils_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvmm_utils_64-srcs"],
+      shared_libs: ["libnvos", "libnvrm_chip", "libnvrm_mem", "libnvrm_surface", "libcutils", "libnvavp", "liblog", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvmedia_64-srcs",
+  srcs: ["lib64/libnvmedia.so"],
+}
+
+cc_defaults {
+  name: "libnvmedia_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvmedia_64-srcs"],
+      shared_libs: ["libnvavp", "libnvtvmr", "libnvparser", "libnvos", "libnvrm_chip", "libnvrm_mem", "libnvrm_sync", "libEGL", "libnvddk_2d_v2", "libnvrm_host1x", "libnvrm_surface", "libnvsocsys", "libnvgr", "libcutils", "liblog", "libutils", "libhardware", "libnvdc", "libnvdla_runtime", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvtvmr_64-srcs",
+  srcs: ["lib64/libnvtvmr.so"],
+}
+
+cc_defaults {
+  name: "libnvtvmr_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvtvmr_64-srcs"],
+      shared_libs: ["libnvsocsys", "libnvrm_mem", "libnvrm_sync", "libnvrm_stream", "libnvrm_host1x", "libnvrm_surface", "libnvos", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvtnr_64-srcs",
+  srcs: ["lib64/libnvtnr.so"],
+}
+
+cc_defaults {
+  name: "libnvtnr_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvtnr_64-srcs"],
+      shared_libs: ["libnvos", "libnvrm_host1x", "libnvtvmr", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvparser_64-srcs",
+  srcs: ["lib64/libnvparser.so"],
+}
+
+cc_defaults {
+  name: "libnvparser_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvparser_64-srcs"],
+      shared_libs: ["libnvrm_chip", "libnvos", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvavp_64-srcs",
+  srcs: ["lib64/libnvavp.so"],
+}
+
+cc_defaults {
+  name: "libnvavp_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvavp_64-srcs"],
+      shared_libs: ["libnvos", "libnvrm_mem", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvdla_runtime_64-srcs",
+  srcs: ["lib64/libnvdla_runtime.so"],
+}
+
+cc_defaults {
+  name: "libnvdla_runtime_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvdla_runtime_64-srcs"],
+      shared_libs: ["libnvos", "libnvrm_host1x", "libnvrm_mem", "libnvsocsys", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+

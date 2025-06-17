@@ -1,0 +1,125 @@
+filegroup {
+  name: "NvCPLSvc-srcs",
+  srcs: ["app/NvCPLSvc/NvCPLSvc.apk"],
+}
+
+filegroup {
+  name: "vendor.nvidia.hardware.cpl.service@1.0-service_64-srcs",
+  srcs: ["bin64/hw/vendor.nvidia.hardware.cpl.service@1.0-service"],
+}
+
+cc_defaults {
+  name: "vendor.nvidia.hardware.cpl.service@1.0-service_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":vendor.nvidia.hardware.cpl.service@1.0-service_64-srcs"],
+      shared_libs: ["vendor.nvidia.hardware.cpl.service@1.0", "vendor.nvidia.hardware.cpl.tools@1.0", "vendor.nvidia.hardware.cpl.interfacecb@1.0", "libbase", "libhidlbase", "libbinder", "libcutils", "liblog", "libutils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "vendor.nvidia.hardware.cpl.service@1.0-service_32-srcs",
+  srcs: ["bin32/hw/vendor.nvidia.hardware.cpl.service@1.0-service"],
+}
+
+cc_defaults {
+  name: "vendor.nvidia.hardware.cpl.service@1.0-service_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":vendor.nvidia.hardware.cpl.service@1.0-service_32-srcs"],
+      shared_libs: ["vendor.nvidia.hardware.cpl.service@1.0", "vendor.nvidia.hardware.cpl.tools@1.0", "vendor.nvidia.hardware.cpl.interfacecb@1.0", "libbase", "libhidlbase", "libbinder", "libcutils", "liblog", "libutils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "vendor.nvidia.hardware.cpl.service_common@1.0-service_64-srcs",
+  srcs: ["bin64/hw/vendor.nvidia.hardware.cpl.service_common@1.0-service"],
+}
+
+cc_defaults {
+  name: "vendor.nvidia.hardware.cpl.service_common@1.0-service_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":vendor.nvidia.hardware.cpl.service_common@1.0-service_64-srcs"],
+      shared_libs: ["vendor.nvidia.hardware.cpl.service@1.0", "vendor.nvidia.hardware.cpl.service_common@1.0", "libbase", "libhidlbase", "libbinder", "libcutils", "liblog", "libutils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "vendor.nvidia.hardware.cpl.service_common@1.0-service_32-srcs",
+  srcs: ["bin32/hw/vendor.nvidia.hardware.cpl.service_common@1.0-service"],
+}
+
+cc_defaults {
+  name: "vendor.nvidia.hardware.cpl.service_common@1.0-service_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":vendor.nvidia.hardware.cpl.service_common@1.0-service_32-srcs"],
+      shared_libs: ["vendor.nvidia.hardware.cpl.service@1.0", "vendor.nvidia.hardware.cpl.service_common@1.0", "libbase", "libhidlbase", "libbinder", "libcutils", "liblog", "libutils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvcontrol_jni_64-srcs",
+  srcs: ["lib64/libnvcontrol_jni.so"],
+}
+
+cc_defaults {
+  name: "libnvcontrol_jni_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvcontrol_jni_64-srcs"],
+      shared_libs: ["liblog", "libcutils", "libjpeg", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvcpl_vendor_64-srcs",
+  srcs: ["lib64/libnvcpl_vendor.so"],
+}
+
+cc_defaults {
+  name: "libnvcpl_vendor_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvcpl_vendor_64-srcs"],
+      shared_libs: ["libcutils", "liblog", "libutils", "libhidlbase", "vendor.nvidia.hardware.cpl.service_common@1.0", "vendor.nvidia.hardware.cpl.tools@1.0", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvcontrol_jni_32-srcs",
+  srcs: ["lib/libnvcontrol_jni.so"],
+}
+
+cc_defaults {
+  name: "libnvcontrol_jni_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvcontrol_jni_32-srcs"],
+      shared_libs: ["liblog", "libcutils", "libjpeg", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvcpl_vendor_32-srcs",
+  srcs: ["lib/libnvcpl_vendor.so"],
+}
+
+cc_defaults {
+  name: "libnvcpl_vendor_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvcpl_vendor_32-srcs"],
+      shared_libs: ["libcutils", "liblog", "libutils", "libhidlbase", "vendor.nvidia.hardware.cpl.service_common@1.0", "vendor.nvidia.hardware.cpl.tools@1.0", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+

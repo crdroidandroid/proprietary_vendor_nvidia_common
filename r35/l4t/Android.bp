@@ -1,0 +1,105 @@
+filegroup {
+  name: "libnvos-l4t_64-srcs",
+  srcs: ["lib64/libnvos-l4t.so"],
+}
+
+cc_defaults {
+  name: "libnvos-l4t_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvos-l4t_64-srcs"],
+      shared_libs: ["libpthread.so.0", "libdl.so.2", "librt.so.1", "libc.so.6", "ld-linux-aarch64.so.1", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvsocsys-l4t_64-srcs",
+  srcs: ["lib64/libnvsocsys-l4t.so"],
+}
+
+cc_defaults {
+  name: "libnvsocsys-l4t_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvsocsys-l4t_64-srcs"],
+      shared_libs: ["libnvos-l4t", "libc.so.6", "ld-linux-aarch64.so.1", ],
+    },
+  },
+}
+
+filegroup {
+  name: "ld-linux-aarch64.so.1_64-srcs",
+  srcs: ["lib64/ld-linux-aarch64.so.1"],
+}
+
+cc_defaults {
+  name: "ld-linux-aarch64.so.1_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":ld-linux-aarch64.so.1_64-srcs"],
+      shared_libs: [],
+    },
+  },
+}
+
+filegroup {
+  name: "libc.so.6_64-srcs",
+  srcs: ["lib64/libc.so.6"],
+}
+
+cc_defaults {
+  name: "libc.so.6_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libc.so.6_64-srcs"],
+      shared_libs: ["ld-linux-aarch64.so.1", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libdl.so.2_64-srcs",
+  srcs: ["lib64/libdl.so.2"],
+}
+
+cc_defaults {
+  name: "libdl.so.2_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libdl.so.2_64-srcs"],
+      shared_libs: ["libc.so.6", "ld-linux-aarch64.so.1", ],
+    },
+  },
+}
+
+filegroup {
+  name: "librt.so.1_64-srcs",
+  srcs: ["lib64/librt.so.1"],
+}
+
+cc_defaults {
+  name: "librt.so.1_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":librt.so.1_64-srcs"],
+      shared_libs: ["libpthread.so.0", "libc.so.6", "ld-linux-aarch64.so.1", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libpthread.so.0_64-srcs",
+  srcs: ["lib64/libpthread.so.0"],
+}
+
+cc_defaults {
+  name: "libpthread.so.0_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libpthread.so.0_64-srcs"],
+      shared_libs: ["libc.so.6", "ld-linux-aarch64.so.1", ],
+    },
+  },
+}
+

@@ -1,0 +1,30 @@
+filegroup {
+  name: "memtrack.tegra_32-srcs",
+  srcs: ["lib/hw/memtrack.tegra.so"],
+}
+
+cc_defaults {
+  name: "memtrack.tegra_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":memtrack.tegra_32-srcs"],
+      shared_libs: ["liblog", "libcutils", "libhardware", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "memtrack.tegra_64-srcs",
+  srcs: ["lib64/hw/memtrack.tegra.so"],
+}
+
+cc_defaults {
+  name: "memtrack.tegra_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":memtrack.tegra_64-srcs"],
+      shared_libs: ["liblog", "libcutils", "libhardware", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+

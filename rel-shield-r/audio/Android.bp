@@ -1,0 +1,235 @@
+filegroup {
+  name: "NvAudioSvc-srcs",
+  srcs: ["app/NvAudioSvc.apk"],
+}
+
+filegroup {
+  name: "DolbyAudioService-srcs",
+  srcs: ["app/DolbyAudioService.apk"],
+}
+
+filegroup {
+  name: "android.hardware.audio@6.0-service-msd_32-srcs",
+  srcs: ["bin32/hw/android.hardware.audio@6.0-service-msd"],
+}
+
+cc_defaults {
+  name: "android.hardware.audio@6.0-service-msd_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":android.hardware.audio@6.0-service-msd_32-srcs"],
+      shared_libs: ["libcutils", "libhardware", "libhidlbase", "liblog", "libfmq", "libutils", "libmedia_helper", "libaudioutils", "vendor.nvidia.hardware.ipprotect@1.0", "android.hardware.audio@6.0", "android.hardware.audio.common@6.0", "android.hardware.audio.common@6.0-util", "vendor.dolby.audio.measurement@1.0", "vendor.dolby.ms12@1.0", "vendor.dolby.ms12@1.1", "vendor.dolby.ms12@1.2", "libjsoncpp", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "sound_trigger.primary.tegra_32-srcs",
+  srcs: ["lib/hw/sound_trigger.primary.tegra.so"],
+}
+
+cc_defaults {
+  name: "sound_trigger.primary.tegra_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":sound_trigger.primary.tegra_32-srcs"],
+      shared_libs: ["liblog", "libcutils", "libtinyalsa", "libim501", "libhardware", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvvisualizer_32-srcs",
+  srcs: ["lib/soundfx/libnvvisualizer.so"],
+}
+
+cc_defaults {
+  name: "libnvvisualizer_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvvisualizer_32-srcs"],
+      shared_libs: ["libcutils", "liblog", "libtinyalsa", "libhardware", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libim501_32-srcs",
+  srcs: ["lib/libim501.so"],
+}
+
+cc_defaults {
+  name: "libim501_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libim501_32-srcs"],
+      shared_libs: ["liblog", "libcutils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvaudiofx_32-srcs",
+  srcs: ["lib/libnvaudiofx.so"],
+}
+
+cc_defaults {
+  name: "libnvaudiofx_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvaudiofx_32-srcs"],
+      shared_libs: ["libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvoice_32-srcs",
+  srcs: ["lib/libnvoice.so"],
+}
+
+cc_defaults {
+  name: "libnvoice_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvoice_32-srcs"],
+      shared_libs: ["libcutils", "libutils", "libaudioutils", "libxml2", "liblog", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "cp_pgm_one_dap_lib_32-srcs",
+  srcs: ["lib/cp_pgm_one_dap_lib.so"],
+}
+
+cc_defaults {
+  name: "cp_pgm_one_dap_lib_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":cp_pgm_one_dap_lib_32-srcs"],
+      shared_libs: ["libm", "libc", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "cp_pgm_two_dap_lib_32-srcs",
+  srcs: ["lib/cp_pgm_two_dap_lib.so"],
+}
+
+cc_defaults {
+  name: "cp_pgm_two_dap_lib_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":cp_pgm_two_dap_lib_32-srcs"],
+      shared_libs: ["libm", "libc", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "cp_sys_one_dap_lib_32-srcs",
+  srcs: ["lib/cp_sys_one_dap_lib.so"],
+}
+
+cc_defaults {
+  name: "cp_sys_one_dap_lib_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":cp_sys_one_dap_lib_32-srcs"],
+      shared_libs: ["libm", "libc", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "cp_sys_two_dap_lib_32-srcs",
+  srcs: ["lib/cp_sys_two_dap_lib.so"],
+}
+
+cc_defaults {
+  name: "cp_sys_two_dap_lib_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":cp_sys_two_dap_lib_32-srcs"],
+      shared_libs: ["libm", "libc", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "ddp_enc_lib_ac3_32-srcs",
+  srcs: ["lib/ddp_enc_lib_ac3.so"],
+}
+
+cc_defaults {
+  name: "ddp_enc_lib_ac3_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":ddp_enc_lib_ac3_32-srcs"],
+      shared_libs: ["libm", "libc", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "ddp_enc_lib_eac3_32-srcs",
+  srcs: ["lib/ddp_enc_lib_eac3.so"],
+}
+
+cc_defaults {
+  name: "ddp_enc_lib_eac3_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":ddp_enc_lib_eac3_32-srcs"],
+      shared_libs: ["libm", "libc", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "ddp_udc_lib_ac3_32-srcs",
+  srcs: ["lib/ddp_udc_lib_ac3.so"],
+}
+
+cc_defaults {
+  name: "ddp_udc_lib_ac3_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":ddp_udc_lib_ac3_32-srcs"],
+      shared_libs: ["libm", "libc", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "ddp_udc_lib_ec3_32-srcs",
+  srcs: ["lib/ddp_udc_lib_ec3.so"],
+}
+
+cc_defaults {
+  name: "ddp_udc_lib_ec3_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":ddp_udc_lib_ec3_32-srcs"],
+      shared_libs: ["libm", "libc", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "dp_dap_lib_32-srcs",
+  srcs: ["lib/dp_dap_lib.so"],
+}
+
+cc_defaults {
+  name: "dp_dap_lib_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":dp_dap_lib_32-srcs"],
+      shared_libs: ["libm", "libc", "libdl", ],
+    },
+  },
+}
+

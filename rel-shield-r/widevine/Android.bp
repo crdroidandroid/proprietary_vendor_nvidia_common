@@ -1,0 +1,75 @@
+filegroup {
+  name: "android.hardware.drm@1.3-service.widevine_32-srcs",
+  srcs: ["bin32/hw/android.hardware.drm@1.3-service.widevine"],
+}
+
+cc_defaults {
+  name: "android.hardware.drm@1.3-service.widevine_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":android.hardware.drm@1.3-service.widevine_32-srcs"],
+      shared_libs: ["android.hardware.drm@1.0", "android.hardware.drm@1.1", "android.hardware.drm@1.2", "android.hardware.drm@1.3", "libbase", "libhidlbase", "liblog", "libutils", "libwvhidl", "libbinder", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libwvdrmengine_64-srcs",
+  srcs: ["lib64/mediadrm/libwvdrmengine.so"],
+}
+
+cc_defaults {
+  name: "libwvdrmengine_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libwvdrmengine_64-srcs"],
+      shared_libs: ["libbase", "libcrypto", "liblog", "libprotobuf-cpp-lite-3.9.1-vendorcompat", "libstagefright_foundation", "libutils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libwvdrmengine_32-srcs",
+  srcs: ["lib/mediadrm/libwvdrmengine.so"],
+}
+
+cc_defaults {
+  name: "libwvdrmengine_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libwvdrmengine_32-srcs"],
+      shared_libs: ["libbase", "libcrypto", "liblog", "libprotobuf-cpp-lite-3.9.1-vendorcompat", "libstagefright_foundation", "libutils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libwvhidl_32-srcs",
+  srcs: ["lib/libwvhidl.so"],
+}
+
+cc_defaults {
+  name: "libwvhidl_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libwvhidl_32-srcs"],
+      shared_libs: ["libcrypto_shim", "android.hardware.drm@1.0", "android.hardware.drm@1.1", "android.hardware.drm@1.2", "android.hardware.drm@1.3", "android.hidl.memory@1.0", "libbase", "libcrypto", "libhidlbase", "libhidlmemory", "liblog", "libprotobuf-cpp-lite-3.9.1-vendorcompat", "libutils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "liboemcrypto_32-srcs",
+  srcs: ["lib/liboemcrypto.so"],
+}
+
+cc_defaults {
+  name: "liboemcrypto_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":liboemcrypto_32-srcs"],
+      shared_libs: ["libnvos", "liblog", "libtlk_secure_hdcp_up", "libcutils", "libutils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+

@@ -1,0 +1,75 @@
+filegroup {
+  name: "libnvomx_32-srcs",
+  srcs: ["lib/libnvomx.so"],
+}
+
+cc_defaults {
+  name: "libnvomx_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvomx_32-srcs"],
+      shared_libs: ["libnativewindow", "android.hardware.power@1.0", "vendor.nvidia.hardware.power@1.0", "libhidlbase", "libnvos", "libnvrm_mem", "libnvrm_host1x", "libnvrm_surface", "libnvmm", "libnvmm_utils", "libnvddk_2d_v2", "libnvmm_contentpipe", "libnvmmlite", "libnvmmlite_utils", "libnvgr", "libbinder", "libutils", "libcutils", "libui", "libhardware", "liblog", "libsync", "libnvtvmr", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvmmlite_video_32-srcs",
+  srcs: ["lib/libnvmmlite_video.so"],
+}
+
+cc_defaults {
+  name: "libnvmmlite_video_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvmmlite_video_32-srcs"],
+      shared_libs: ["libnvos", "libnvrm_chip", "libnvrm_mem", "libnvrm_stream", "libnvrm_host1x", "libnvrm_surface", "libnvmmlite_utils", "libnvmmlite", "libnvmm_utils", "libnvtvmr", "libnvddk_2d_v2", "libnvtnr", "libnvmedia", "libnvparser", "libcuda", "libEGL", "libcutils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libstagefrighthw_32-srcs",
+  srcs: ["lib/libstagefrighthw.so"],
+}
+
+cc_defaults {
+  name: "libstagefrighthw_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libstagefrighthw_32-srcs"],
+      shared_libs: ["libutils", "liblog", "libnvmm_utils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvomx_64-srcs",
+  srcs: ["lib64/libnvomx.so"],
+}
+
+cc_defaults {
+  name: "libnvomx_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvomx_64-srcs"],
+      shared_libs: ["libnativewindow", "android.hardware.power@1.0", "vendor.nvidia.hardware.power@1.0", "libhidlbase", "libnvos", "libnvrm_mem", "libnvrm_host1x", "libnvrm_surface", "libnvmm", "libnvmm_utils", "libnvddk_2d_v2", "libnvmm_contentpipe", "libnvmmlite", "libnvmmlite_utils", "libnvgr", "libbinder", "libutils", "libcutils", "libui", "libhardware", "liblog", "libsync", "libnvtvmr", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvmmlite_video_64-srcs",
+  srcs: ["lib64/libnvmmlite_video.so"],
+}
+
+cc_defaults {
+  name: "libnvmmlite_video_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvmmlite_video_64-srcs"],
+      shared_libs: ["libnvos", "libnvrm_chip", "libnvrm_mem", "libnvrm_stream", "libnvrm_host1x", "libnvrm_surface", "libnvmmlite_utils", "libnvmmlite", "libnvmm_utils", "libnvtvmr", "libnvddk_2d_v2", "libnvtnr", "libnvmedia", "libnvparser", "libcuda", "libEGL", "libcutils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+

@@ -1,0 +1,305 @@
+filegroup {
+  name: "vendor.nvidia.hardware.camera.provider@2.4-service_64-srcs",
+  srcs: ["bin64/vendor.nvidia.hardware.camera.provider@2.4-service"],
+}
+
+cc_defaults {
+  name: "vendor.nvidia.hardware.camera.provider@2.4-service_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":vendor.nvidia.hardware.camera.provider@2.4-service_64-srcs"],
+      shared_libs: ["libbase", "libhardware", "libhidlbase", "libbinder", "liblog", "libutils", "android.hardware.camera.device@1.0", "vendor.nvidia.hardware.camera.argus.service@1.0-impl", "vendor.nvidia.hardware.camera.argus.service@1.0", "vendor.nvidia.hardware.camera.device@3.2", "vendor.nvidia.hardware.camera.device@3.2-impl", "vendor.nvidia.hardware.camera.provider@2.4", "vendor.nvidia.hardware.camera.provider@2.4-impl", "android.hardware.camera.provider@2.4", "android.hardware.camera.common@1.0", "libcutils", "libcamera_metadata", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "vendor.nvidia.hardware.camera.argus.service@1.0-impl_64-srcs",
+  srcs: ["lib64/vendor.nvidia.hardware.camera.argus.service@1.0-impl.so"],
+}
+
+cc_defaults {
+  name: "vendor.nvidia.hardware.camera.argus.service@1.0-impl_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":vendor.nvidia.hardware.camera.argus.service@1.0-impl_64-srcs"],
+      shared_libs: ["libbase", "libbinder", "libcutils", "libhardware", "libhidlbase", "liblog", "libutils", "vendor.nvidia.hardware.camera.argus.service@1.0", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "vendor.nvidia.hardware.camera.device@3.2-impl_64-srcs",
+  srcs: ["lib64/vendor.nvidia.hardware.camera.device@3.2-impl.so"],
+}
+
+cc_defaults {
+  name: "vendor.nvidia.hardware.camera.device@3.2-impl_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":vendor.nvidia.hardware.camera.device@3.2-impl_64-srcs"],
+      shared_libs: ["android.hardware.graphics.mapper@3.0", "android.hardware.graphics.mapper@4.0", "libgralloctypes", "libhidlbase", "libutils", "libcutils", "vendor.nvidia.hardware.camera.device@3.2", "android.hardware.camera.device@3.2", "android.hardware.camera.provider@2.4", "android.hardware.graphics.mapper@2.0", "android.hardware.camera.common@1.0", "liblog", "libhardware", "libcamera_metadata", "libfmq", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "vendor.nvidia.hardware.camera.provider@2.4-impl_64-srcs",
+  srcs: ["lib64/vendor.nvidia.hardware.camera.provider@2.4-impl.so"],
+}
+
+cc_defaults {
+  name: "vendor.nvidia.hardware.camera.provider@2.4-impl_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":vendor.nvidia.hardware.camera.provider@2.4-impl_64-srcs"],
+      shared_libs: ["android.hardware.graphics.mapper@3.0", "android.hardware.graphics.mapper@4.0", "libgralloctypes", "libhidlbase", "libutils", "android.hardware.camera.device@1.0", "vendor.nvidia.hardware.camera.device@3.2", "camera.device@1.0-impl", "vendor.nvidia.hardware.camera.device@3.2-impl", "vendor.nvidia.hardware.camera.provider@2.4", "android.hardware.camera.provider@2.4", "android.hardware.camera.common@1.0", "android.hardware.graphics.mapper@2.0", "android.hidl.allocator@1.0", "android.hidl.memory@1.0", "liblog", "libhardware", "libcutils", "libcamera_metadata", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "model_frontal-srcs",
+  srcs: ["etc/model_frontal.xml"],
+}
+
+filegroup {
+  name: "camera.tegra_64-srcs",
+  srcs: ["lib64/hw/camera.tegra.so"],
+}
+
+cc_defaults {
+  name: "camera.tegra_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":camera.tegra_64-srcs"],
+      shared_libs: ["libbinder", "libcutils", "liblog", "libhardware_legacy", "libjpeg", "libnvddk_2d_v2", "libnvmm_utils", "libnvos", "libnvrm_mem", "libnvrm_host1x", "libnvrm_surface", "libnvtvmr", "libui", "libutils", "libhardware", "libnvcam_imageencoder", "libnvmm", "libnvmm_camera_v3", "libnvgr", "libnvscf", "libnvcamlog", "libcamera_metadata", "libGLESv2", "libnvodm_imager", "libpower", "libsensorndkbridge", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvmm_camera_v3_64-srcs",
+  srcs: ["lib64/libnvmm_camera_v3.so"],
+}
+
+cc_defaults {
+  name: "libnvmm_camera_v3_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvmm_camera_v3_64-srcs"],
+      shared_libs: ["libnvodm_imager", "libnvddk_2d_v2", "libnvmm_utils", "libnvos", "libnvrm_surface", "libnvrm_mem", "libnvrm_host1x", "libnvmm", "libcutils", "libjpeg", "libEGL", "libGLESv2", "libnvisp_v3", "libnvvicsi_v3", "libnvcamerautils", "libnvcamlog", "libnvcspline", "libnvisp", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvargus_64-srcs",
+  srcs: ["lib64/libnvargus.so"],
+}
+
+cc_defaults {
+  name: "libnvargus_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvargus_64-srcs"],
+      shared_libs: ["libEGL", "libnvcamerautils", "libnvcam_imageencoder", "libnvddk_vic", "libnvfnetstorehdfx", "libnvmm_utils", "libnvos", "libnvrm_sync", "libnvrm_mem", "libnvrm_host1x", "libnvrm_surface", "libnvscf", "libnvcameratools", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvscf_64-srcs",
+  srcs: ["lib64/libnvscf.so"],
+}
+
+cc_defaults {
+  name: "libnvscf_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvscf_64-srcs"],
+      shared_libs: ["libsensorndkbridge", "libutils", "libcutils", "libbinder", "libnvcamlog", "libnvcamerautils", "libc++", "libGLESv2", "libnvddk_vic", "libnvisp_v3", "libnvisp", "libnvmm_camera_v3", "libnvmm_utils", "libnvodm_imager", "libnvos", "libnvrm_surface", "libnvrm_sync", "libnvrm_host1x", "libnvrm_chip", "libnvrm_mem", "libnvtvmr", "libnvvicsi_v3", "libnvphs", "libsync", "libEGL", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvodm_imager_64-srcs",
+  srcs: ["lib64/libnvodm_imager.so"],
+}
+
+cc_defaults {
+  name: "libnvodm_imager_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvodm_imager_64-srcs"],
+      shared_libs: ["liblog", "libnvos", "libnvrm_chip", "libcutils", "libnvcamerautils", "libnvcamlog", "libnvcamv4l2", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvcamlog_64-srcs",
+  srcs: ["lib64/libnvcamlog.so"],
+}
+
+cc_defaults {
+  name: "libnvcamlog_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvcamlog_64-srcs"],
+      shared_libs: ["libnvos", "libcutils", "liblog", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvcam_imageencoder_64-srcs",
+  srcs: ["lib64/libnvcam_imageencoder.so"],
+}
+
+cc_defaults {
+  name: "libnvcam_imageencoder_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvcam_imageencoder_64-srcs"],
+      shared_libs: ["libnvos", "libjpeg", "libnvmm_utils", "libnvrm_mem", "libnvrm_surface", "libnvtvmr", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvcameratools_64-srcs",
+  srcs: ["lib64/libnvcameratools.so"],
+}
+
+cc_defaults {
+  name: "libnvcameratools_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvcameratools_64-srcs"],
+      shared_libs: ["libcutils", "libnvddk_2d_v2", "libnvmm_utils", "libnvos", "libnvrm_surface", "libnvrm_mem", "libutils", "libhardware", "libnvcam_imageencoder", "libnvscf", "libnvcamerautils", "libz", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvcamerautils_64-srcs",
+  srcs: ["lib64/libnvcamerautils.so"],
+}
+
+cc_defaults {
+  name: "libnvcamerautils_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvcamerautils_64-srcs"],
+      shared_libs: ["libnvcamlog", "libnvos", "libnvrm_mem", "libnvrm_surface", "libnvrm_chip", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvfnet_64-srcs",
+  srcs: ["lib64/libnvfnet.so"],
+}
+
+cc_defaults {
+  name: "libnvfnet_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvfnet_64-srcs"],
+      shared_libs: ["libexpat", "libnvos", "libnvrm_sync", "libnvrm_host1x", "libEGL", "libnativewindow", "libpng", "libz", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvfnetstorehdfx_64-srcs",
+  srcs: ["lib64/libnvfnetstorehdfx.so"],
+}
+
+cc_defaults {
+  name: "libnvfnetstorehdfx_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvfnetstorehdfx_64-srcs"],
+      shared_libs: ["libnvfnet", "libnvos", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvisp_64-srcs",
+  srcs: ["lib64/libnvisp.so"],
+}
+
+cc_defaults {
+  name: "libnvisp_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvisp_64-srcs"],
+      shared_libs: ["libnvos", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvisp_v3_64-srcs",
+  srcs: ["lib64/libnvisp_v3.so"],
+}
+
+cc_defaults {
+  name: "libnvisp_v3_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvisp_v3_64-srcs"],
+      shared_libs: ["libnvos", "libnvrm_stream", "libnvrm_host1x", "libnvrm_mem", "libnvcamlog", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvvicsi_v3_64-srcs",
+  srcs: ["lib64/libnvvicsi_v3.so"],
+}
+
+cc_defaults {
+  name: "libnvvicsi_v3_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvvicsi_v3_64-srcs"],
+      shared_libs: ["libnvos", "libnvrm_host1x", "libnvrm_stream", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvcamv4l2_64-srcs",
+  srcs: ["lib64/libnvcamv4l2.so"],
+}
+
+cc_defaults {
+  name: "libnvcamv4l2_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvcamv4l2_64-srcs"],
+      shared_libs: ["libnvos", "libnvcamlog", "libnvcamerautils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvcspline_64-srcs",
+  srcs: ["lib64/libnvcspline.so"],
+}
+
+cc_defaults {
+  name: "libnvcspline_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvcspline_64-srcs"],
+      shared_libs: ["libnvos", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+

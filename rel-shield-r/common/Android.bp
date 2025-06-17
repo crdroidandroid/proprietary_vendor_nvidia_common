@@ -1,0 +1,30 @@
+filegroup {
+  name: "libnvos_64-srcs",
+  srcs: ["lib64/libnvos.so"],
+}
+
+cc_defaults {
+  name: "libnvos_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvos_64-srcs"],
+      shared_libs: ["liblog", "libcutils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvos_32-srcs",
+  srcs: ["lib/libnvos.so"],
+}
+
+cc_defaults {
+  name: "libnvos_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvos_32-srcs"],
+      shared_libs: ["liblog", "libcutils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+

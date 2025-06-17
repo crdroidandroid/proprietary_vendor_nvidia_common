@@ -1,0 +1,390 @@
+filegroup {
+  name: "vendor.nvidia.hardware.phs@1.0-impl_32-srcs",
+  srcs: ["lib/vendor.nvidia.hardware.phs@1.0-impl.so"],
+}
+
+cc_defaults {
+  name: "vendor.nvidia.hardware.phs@1.0-impl_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":vendor.nvidia.hardware.phs@1.0-impl_32-srcs"],
+      shared_libs: ["liblog", "libhardware", "libcutils", "libhidlbase", "libutils", "libbinder", "vendor.nvidia.hardware.phs@1.0", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "vendor.nvidia.hardware.phs@1.0-impl_64-srcs",
+  srcs: ["lib64/vendor.nvidia.hardware.phs@1.0-impl.so"],
+}
+
+cc_defaults {
+  name: "vendor.nvidia.hardware.phs@1.0-impl_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":vendor.nvidia.hardware.phs@1.0-impl_64-srcs"],
+      shared_libs: ["liblog", "libhardware", "libcutils", "libhidlbase", "libutils", "libbinder", "vendor.nvidia.hardware.phs@1.0", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvgov_boot_64-srcs",
+  srcs: ["lib64/libnvgov_boot.so"],
+}
+
+cc_defaults {
+  name: "libnvgov_boot_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvgov_boot_64-srcs"],
+      shared_libs: ["libnvphsd", "liblog", "libutils", "libcutils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvgov_camera_64-srcs",
+  srcs: ["lib64/libnvgov_camera.so"],
+}
+
+cc_defaults {
+  name: "libnvgov_camera_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvgov_camera_64-srcs"],
+      shared_libs: ["libnvphsd", "liblog", "libutils", "libcutils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvgov_force_64-srcs",
+  srcs: ["lib64/libnvgov_force.so"],
+}
+
+cc_defaults {
+  name: "libnvgov_force_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvgov_force_64-srcs"],
+      shared_libs: ["libnvphsd", "liblog", "libutils", "libcutils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvgov_generic_64-srcs",
+  srcs: ["lib64/libnvgov_generic.so"],
+}
+
+cc_defaults {
+  name: "libnvgov_generic_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvgov_generic_64-srcs"],
+      shared_libs: ["libnvphsd", "liblog", "libutils", "libcutils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvgov_gpucompute_64-srcs",
+  srcs: ["lib64/libnvgov_gpucompute.so"],
+}
+
+cc_defaults {
+  name: "libnvgov_gpucompute_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvgov_gpucompute_64-srcs"],
+      shared_libs: ["libnvphsd", "liblog", "libutils", "libcutils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvgov_graphics_64-srcs",
+  srcs: ["lib64/libnvgov_graphics.so"],
+}
+
+cc_defaults {
+  name: "libnvgov_graphics_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvgov_graphics_64-srcs"],
+      shared_libs: ["libnvphsd", "liblog", "libutils", "libcutils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvgov_il_64-srcs",
+  srcs: ["lib64/libnvgov_il.so"],
+}
+
+cc_defaults {
+  name: "libnvgov_il_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvgov_il_64-srcs"],
+      shared_libs: ["libnvphsd", "liblog", "libutils", "libcutils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvgov_spincircle_64-srcs",
+  srcs: ["lib64/libnvgov_spincircle.so"],
+}
+
+cc_defaults {
+  name: "libnvgov_spincircle_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvgov_spincircle_64-srcs"],
+      shared_libs: ["libnvphsd", "liblog", "libutils", "libcutils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvgov_tbc_64-srcs",
+  srcs: ["lib64/libnvgov_tbc.so"],
+}
+
+cc_defaults {
+  name: "libnvgov_tbc_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvgov_tbc_64-srcs"],
+      shared_libs: ["libnvphsd", "liblog", "libutils", "libcutils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvgov_ui_64-srcs",
+  srcs: ["lib64/libnvgov_ui.so"],
+}
+
+cc_defaults {
+  name: "libnvgov_ui_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvgov_ui_64-srcs"],
+      shared_libs: ["libnvphsd", "liblog", "libutils", "libcutils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvphs_64-srcs",
+  srcs: ["lib64/libnvphs.so"],
+}
+
+cc_defaults {
+  name: "libnvphs_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvphs_64-srcs"],
+      shared_libs: ["liblog", "libutils", "libcutils", "libhidlbase", "vendor.nvidia.hardware.phs@1.0", "libnvos", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvphsd_64-srcs",
+  srcs: ["lib64/libnvphsd.so"],
+}
+
+cc_defaults {
+  name: "libnvphsd_64-defaults",
+  target: {
+    android_arm64: {
+      srcs: [":libnvphsd_64-srcs"],
+      shared_libs: ["libutils", "liblog", "libnvos", "libbinder", "libbase", "libcutils", "libhidlbase", "vendor.nvidia.hardware.phs@1.0", "vendor.nvidia.hardware.phs@1.0-impl", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvgov_boot_32-srcs",
+  srcs: ["lib/libnvgov_boot.so"],
+}
+
+cc_defaults {
+  name: "libnvgov_boot_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvgov_boot_32-srcs"],
+      shared_libs: ["libnvphsd", "liblog", "libutils", "libcutils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvgov_camera_32-srcs",
+  srcs: ["lib/libnvgov_camera.so"],
+}
+
+cc_defaults {
+  name: "libnvgov_camera_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvgov_camera_32-srcs"],
+      shared_libs: ["libnvphsd", "liblog", "libutils", "libcutils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvgov_force_32-srcs",
+  srcs: ["lib/libnvgov_force.so"],
+}
+
+cc_defaults {
+  name: "libnvgov_force_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvgov_force_32-srcs"],
+      shared_libs: ["libnvphsd", "liblog", "libutils", "libcutils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvgov_generic_32-srcs",
+  srcs: ["lib/libnvgov_generic.so"],
+}
+
+cc_defaults {
+  name: "libnvgov_generic_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvgov_generic_32-srcs"],
+      shared_libs: ["libnvphsd", "liblog", "libutils", "libcutils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvgov_gpucompute_32-srcs",
+  srcs: ["lib/libnvgov_gpucompute.so"],
+}
+
+cc_defaults {
+  name: "libnvgov_gpucompute_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvgov_gpucompute_32-srcs"],
+      shared_libs: ["libnvphsd", "liblog", "libutils", "libcutils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvgov_graphics_32-srcs",
+  srcs: ["lib/libnvgov_graphics.so"],
+}
+
+cc_defaults {
+  name: "libnvgov_graphics_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvgov_graphics_32-srcs"],
+      shared_libs: ["libnvphsd", "liblog", "libutils", "libcutils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvgov_il_32-srcs",
+  srcs: ["lib/libnvgov_il.so"],
+}
+
+cc_defaults {
+  name: "libnvgov_il_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvgov_il_32-srcs"],
+      shared_libs: ["libnvphsd", "liblog", "libutils", "libcutils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvgov_spincircle_32-srcs",
+  srcs: ["lib/libnvgov_spincircle.so"],
+}
+
+cc_defaults {
+  name: "libnvgov_spincircle_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvgov_spincircle_32-srcs"],
+      shared_libs: ["libnvphsd", "liblog", "libutils", "libcutils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvgov_tbc_32-srcs",
+  srcs: ["lib/libnvgov_tbc.so"],
+}
+
+cc_defaults {
+  name: "libnvgov_tbc_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvgov_tbc_32-srcs"],
+      shared_libs: ["libnvphsd", "liblog", "libutils", "libcutils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvgov_ui_32-srcs",
+  srcs: ["lib/libnvgov_ui.so"],
+}
+
+cc_defaults {
+  name: "libnvgov_ui_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvgov_ui_32-srcs"],
+      shared_libs: ["libnvphsd", "liblog", "libutils", "libcutils", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvphs_32-srcs",
+  srcs: ["lib/libnvphs.so"],
+}
+
+cc_defaults {
+  name: "libnvphs_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvphs_32-srcs"],
+      shared_libs: ["liblog", "libutils", "libcutils", "libhidlbase", "vendor.nvidia.hardware.phs@1.0", "libnvos", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
+filegroup {
+  name: "libnvphsd_32-srcs",
+  srcs: ["lib/libnvphsd.so"],
+}
+
+cc_defaults {
+  name: "libnvphsd_32-defaults",
+  target: {
+    android_arm: {
+      srcs: [":libnvphsd_32-srcs"],
+      shared_libs: ["libutils", "liblog", "libnvos", "libbinder", "libbase", "libcutils", "libhidlbase", "vendor.nvidia.hardware.phs@1.0", "vendor.nvidia.hardware.phs@1.0-impl", "libc++", "libc", "libm", "libdl", ],
+    },
+  },
+}
+
