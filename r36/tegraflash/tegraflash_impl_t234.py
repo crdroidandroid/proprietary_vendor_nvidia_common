@@ -1,5 +1,5 @@
 #
-# SPDX-FileCopyrightText: Copyright (c) 2014-2024, NVIDIA Corporation.  All Rights Reserved.
+# SPDX-FileCopyrightText: Copyright (c) 2014-2025, NVIDIA Corporation.  All Rights Reserved.
 # SPDX-License-Identifier: LicenseRef-NvidiaProprietary
 #
 # NVIDIA Corporation and its licensors retain all intellectual property
@@ -570,7 +570,17 @@ class TFlashT23x_Base(object):
             lines += 'COMPRESS : "FALSE"\n'
         with open(kdf_yaml, 'w') as f:
             f.write(lines)
-        self.call_tegrasign(filename, None, None, values['--encrypt_key'][0], None, None, None, None, None, None, False, 0, 0, 0, None, 0, ['kdf_file=' + kdf_yaml])
+        if values['--hsm'] is True:
+            self.call_tegrasign(filename, None, None, None, None, \
+                                None, None, None, None, None, \
+                                False, 0, 0, 0, None, \
+                                0, ['kdf_file=' + kdf_yaml], 'sbk')
+        else:
+            self.call_tegrasign(filename, None, None, values['--encrypt_key'][0], None, \
+                                None, None, None, None, None, \
+                                False, 0, 0, 0, None, \
+                                0, ['kdf_file=' + kdf_yaml])
+
         os.remove(kdf_yaml)
         return file_base + '_encrypt'  + file_ext
 
@@ -612,8 +622,14 @@ class TFlashT23x_Base(object):
         key_val = values['--key']
         list_val = self.tegrahost_values['--list']
         pkh_val = self.tegrasign_values['--pubkeyhash']
-        self.call_tegrasign(None, None, None, key_val, None,
-                            list_val, None, pkh_val, 'sha512', None)
+        if values['--hsm'] is True:
+            self.call_tegrasign(None, None, None, None, None, \
+                                list_val, None, pkh_val, 'sha512', None, \
+                                False, 0, 0, 0, None, \
+                                0, None, 'rsa')
+        else:
+            self.call_tegrasign(None, None, None, key_val, None, \
+                                list_val, None, pkh_val, 'sha512', None)
         # Special handling for dce_fw binary which has been compressed.
         dce_bin = self.get_file_name_from_images_list('dce_fw')
         if dce_bin is not None:
@@ -749,8 +765,14 @@ class TFlashT23x_Base(object):
         list_val = self.tegrabct_values['--list']
         sha_val = 'sha512'
         pkh_val = self.tegrasign_values['--pubkeyhash']
-        self.call_tegrasign(None, None, None, key_val, None,
-                            list_val, None, pkh_val, sha_val, None)
+        if values['--hsm'] is True:
+            self.call_tegrasign(None, None, None, None, None, \
+                                list_val, None, pkh_val, sha_val, None, \
+                                False, 0, 0, 0, None, \
+                                0, None, 'rsa')
+        else:
+            self.call_tegrasign(None, None, None, key_val, None, \
+                                list_val, None, pkh_val, sha_val, None)
 
         info_print('Updating BCT with signature')
         command = self.exec_file('tegrabct')
@@ -765,8 +787,14 @@ class TFlashT23x_Base(object):
         # Generate and update SHA digest for BR-BCT.
         list_val = self.tegrabct_values['--list']
         info_print('Generating SHA2 Hash')
-        self.call_tegrasign(None, None, None, 'None', None,
-                            list_val, None, None, sha_val, None)
+        if values['--hsm'] is True:
+            self.call_tegrasign(None, None, None, 'None', None, \
+                                list_val, None, None, sha_val, None, \
+                                False, 0, 0, 0, None, \
+                                0, None, 'sbk')
+        else:
+            self.call_tegrasign(None, None, None, 'None', None,
+                                list_val, None, None, sha_val, None)
         info_print('Updating BCT with SHA2 Hash')
         command = self.exec_file('tegrabct')
         command.extend([brbct_arg, bct_file])
@@ -1080,8 +1108,9 @@ class TFlashT23x_Base(object):
             uidlog = run_command(command, True)
             info_print('Boot Rom communication completed')
 
-    def tegraflash_send_to_bootloader(self, sign_images = True, is_coldboot = False, mb2_is_fskp=False):
-        self.tegraflash_generate_blob(sign_images, 'blob.bin', is_coldboot, mb2_is_fskp)
+    def tegraflash_send_to_bootloader(self, sign_images = True, is_coldboot = False, mb2_is_fskp=False, gen_rcmblob=True):
+        if gen_rcmblob == True:
+            self.tegraflash_generate_blob(sign_images, 'blob.bin', is_coldboot, mb2_is_fskp)
 
         info_print('Sending membct and RCM blob')
         command = self.exec_file('tegrarcm')
@@ -1158,12 +1187,12 @@ class TFlashT23x_Base(object):
         if count == 0:
             raise tegraflash_exception('None of the bootloaders are running on device. Check the UART log.')
 
-    def check_is_mb2applet(self):
+    def check_is_mb2applet(self, enable_print=True):
         try:
             command = self.exec_file('tegrarcm')
             command.extend(['--chip', values['--chip'], values['--chip_major']])
             command.extend(['--ismb2applet'])
-            run_command(command)
+            run_command(command, enable_print)
             return True
         except tegraflash_exception as e:
             return False
@@ -1384,6 +1413,9 @@ class TFlashT23x_Base(object):
 
         for bin in binary_list:
             shutil.copyfile(bin, output_dir + "/" + bin)
+
+        tegrarcm_bin = self.tegraflash_binaries_v2['tegrarcm']
+        shutil.copy2(tegrarcm_bin, output_dir)
 
         info_print("All RCM required files are saved in " + self.rcmboot_blob_dir + " folder")
 
@@ -1751,8 +1783,15 @@ class TFlashT23x_Base(object):
             payload_len = struct.unpack('<I', len_buf)[0]
             iv2 = src[iv2_offset:iv2_offset+iv2_size]
             aad2 = src[aad2_offset:aad2_offset+aad2_size]
-            self.call_tegrasign(
-                in_file, None, None, fskp_ek, str(payload_len), None, '8192', None, None, 'aesgcm', True, hex_to_str(iv2), hex_to_str(aad2), hex_to_str(bytearray(tag2_size)))
+            if values['--hsm'] is True:
+                self.call_tegrasign(in_file, None, None, None, str(payload_len), \
+                                    None, '8192', None, None, 'aesgcm', \
+                                    True, hex_to_str(iv2), hex_to_str(aad2), hex_to_str(bytearray(tag2_size)), None, \
+                                    0, None, 'fskp_ek')
+            else:
+                self.call_tegrasign(in_file, None, None, fskp_ek, str(payload_len), \
+                                    None, '8192', None, None, 'aesgcm', \
+                                    True, hex_to_str(iv2), hex_to_str(aad2), hex_to_str(bytearray(tag2_size)))
 
         enc_file = os.path.splitext(in_file)[0] + '_encrypt' + os.path.splitext(in_file)[1]
         with open(enc_file, 'rb+') as f:
@@ -1959,8 +1998,14 @@ class TFlashT23x_Base(object):
         key_val = values['--key']
         list_val = filename + '_list.xml'
         pkh_val = self.tegrasign_values['--pubkeyhash']
-        self.call_tegrasign(None, None, None, key_val, None,
-                            list_val, None, pkh_val, 'sha512', None)
+        if values['--hsm'] is True:
+            self.call_tegrasign(None, None, None, None, None, \
+                                list_val, None, pkh_val, 'sha512', None, \
+                                False, 0, 0, 0, None, \
+                                0, None, 'rsa')
+        else:
+            self.call_tegrasign(None, None, None, key_val, None, \
+                                list_val, None, pkh_val, 'sha512', None)
         sign_xml_file = filename + '_list_signed.xml'
         with open(sign_xml_file, 'rt') as file:
             xml_tree = ElementTree.parse(file)
@@ -2130,8 +2175,14 @@ class TFlashT23x_Base(object):
         key_val = values['--key']
         list_val = enc_file + '_list.xml'
         pkh_val = self.tegrasign_values['--pubkeyhash']
-        self.call_tegrasign(None, None, None, key_val, None,
-                            list_val, None, pkh_val, 'sha512', None)
+        if values['--hsm'] is True:
+            self.call_tegrasign(None, None, None, None, None, \
+                                list_val, None, pkh_val, 'sha512', None, \
+                                False, 0, 0, 0, None, \
+                                0, None, 'rsa')
+        else:
+            self.call_tegrasign(None, None, None, key_val, None, \
+                                list_val, None, pkh_val, 'sha512', None)
         sign_xml_file = enc_file + '_list_signed.xml'
 
         with open(sign_xml_file, 'rt') as file:
@@ -2240,8 +2291,15 @@ class TFlashT23x_Base(object):
         key_val = values['--key']
         list_val = self.tegrahost_values['--list']
         pkh_val = self.tegrasign_values['--pubkeyhash']
-        self.call_tegrasign(None, None, None, key_val, None,
-                            list_val, None, pkh_val, 'sha512', None)
+
+        if values['--hsm'] is True:
+            self.call_tegrasign(None, None, None, None, None, \
+                                list_val, None, pkh_val, 'sha512', None, \
+                                False, 0, 0, 0, None, \
+                                0, None, 'rsa')
+        else:
+            self.call_tegrasign(None, None, None, key_val, None, \
+                                list_val, None, pkh_val, 'sha512', None)
         return
 
     def tegraflash_generate_mem_bct(self, is_cold_boot_mb1_bct):
@@ -2449,7 +2507,8 @@ class TFlashT23x_Base(object):
         if values['--securedev']:
             print('Error: read partition with --securedev not support yet')
             return
-        if not self.check_is_mb2applet():
+
+        if not self.check_is_mb2applet(enable_print=False):
             self.tegraflash_get_key_mode()
             args['--skipuid'] = False
             self.tegraflash_preprocess_configs()
@@ -2575,8 +2634,10 @@ class TFlashT23x_Base(object):
             self.tegraflash_sign_images()
         self.tegraflash_generate_bct()
         self.tegraflash_update_images()
+        # Generate rcm blob in advance and skip rcm blob generate in tegraflash_send_to_bootloader
+        self.tegraflash_generate_blob(True, 'blob.bin', False, False)
         self.tegraflash_send_to_bootrom()
-        self.tegraflash_send_to_bootloader(True, False)
+        self.tegraflash_send_to_bootloader(True, False, False, False)
         self.tegraflash_poll_applet_bl()
 
         partition_type = self.get_partition_partition_type(partition_name.lower())
@@ -2793,7 +2854,7 @@ class TFlashT23x_Base(object):
     def tegraflash_dump(self, args, dump_args):
         values.update(args)
 
-        if not self.check_is_mb2applet():
+        if not self.check_is_mb2applet(enable_print=False):
             self.tegraflash_get_key_mode()
             args['--skipuid'] = False
             self.tegraflash_preprocess_configs()
@@ -3463,7 +3524,14 @@ class TFlashT23x_Base(object):
     """ Other helper methods """
 
     def tegraflash_get_key_mode(self):
-        self.call_tegrasign(None, 'mode.txt', None, values['--key'], None, None, None, None, None, None)
+        if values['--hsm'] is True:
+            self.call_tegrasign(None, 'mode.txt', None, None, None, \
+                                None, None, None, None, None, \
+                                False, 0, 0, 0, None, \
+                                0, None, 'rsa')
+        else:
+            self.call_tegrasign(None, 'mode.txt', None, values['--key'], None, \
+                                None, None, None, None, None)
 
         with open('mode.txt') as mode_file:
             self.tegrasign_values['--mode'] = mode_file.read()
@@ -3686,11 +3754,14 @@ class TFlashT23x_Base(object):
     def call_tegrasign(self, file_val, getmode, getmont, key,
                        length, list_val, offset, pubkeyhash, sha, skip_enc,
                        verbose=False, iv=0, aad=0, tag=0, sign=None,
-                       verify=0, kdf=None, hsm=None):
+                       verify=0, kdf=None, hsm=None, ran=None, block='0',
+                       softhsm=True):
 
         tegrasign(file_val, getmode, getmont, key, length,
                   list_val, offset, pubkeyhash, sha, skip_enc,
-                  verbose, iv, aad, tag, sign, verify, kdf, hsm)
+                  verbose, iv, aad, tag, sign,
+                  verify, kdf, hsm, ran, block,
+                  softhsm)
 
     def exec_file(self, name):
         bin_name = self.tegraflash_binaries_v2[name]

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2018-2024, NVIDIA Corporation.  All Rights Reserved.
+# Copyright (c) 2018-2025, NVIDIA Corporation.  All Rights Reserved.
 #
 # NVIDIA Corporation and its licensors retain all intellectual property
 # and proprietary rights in and to this software, related documentation
@@ -544,6 +544,16 @@ def sign_single_file(p_key, internal):
     return 0
 
 def do_aes_cmac(buff_to_sign, length, p_key):
+    if is_hsm() and is_softhsm() and not is_zero_aes(p_key):
+        do_aes_cmac_hsm = import_function('do_aes_cmac_hsm')
+        buff_to_sign = bytes(buff_to_sign)
+        if len(buff_to_sign) >= length:
+            buff_to_sign_hsm = buff_to_sign[:length]
+        else:
+            buff_to_sign_hsm = buff_to_sign
+        buff_sig = do_aes_cmac_hsm(buff_to_sign_hsm, p_key)
+        return buff_sig
+
     buff_sig = "0" * 16 # note cmac will always return 128bit
 
     base_name =  script_dir + 'v3_cmac_' + pid
@@ -598,7 +608,7 @@ def do_hmac_sha256(buff_to_sign, length, p_key):
     buff_dgst = "0" * 32 # note hmac-sha256 will always return 256bit
 
     if is_hsm():
-        from tegrasign_v3_hsm import do_hmac_sha256_hsm
+        do_hmac_sha256_hsm = import_function('do_hmac_sha256_hsm')
         return do_hmac_sha256_hsm(buff_to_sign, p_key)
 
     base_name = script_dir + 'v3_hmacsha_' + pid
@@ -649,6 +659,13 @@ def do_hmac_sha256(buff_to_sign, length, p_key):
     return buff_dgst
 
 def do_aes_cbc(buff_to_enc, length, p_key, iv):
+    if is_hsm() and is_softhsm():
+        do_aes_cbc_hsm = import_function('do_aes_cbc_hsm')
+        buff_to_enc = bytes(buff_to_enc)
+        if (iv == None):
+            iv = '0' * len(iv)
+        buff_enc = do_aes_cbc_hsm(bytes(buff_to_enc), bytes(iv), p_key)
+        return buff_enc
 
     buff_sig = "0" * 16
     base_name = script_dir + 'v3_cbc_' + pid
@@ -709,7 +726,7 @@ def do_aes_cbc(buff_to_enc, length, p_key, iv):
 def do_rsa_pss(buff_to_sign, length, p_key, pkhfile, montfile, sha512):
     p_key.key.pkckey.Sha = sha512
     if is_hsm():
-        from tegrasign_v3_hsm import do_rsa_pss_hsm
+        do_rsa_pss_hsm = import_function('do_rsa_pss_hsm')
         return do_rsa_pss_hsm(buff_to_sign, p_key)
 
     buff_sig = "0" * p_key.keysize
@@ -830,7 +847,7 @@ def do_ecc(buff_to_sign, length, p_key, pkhfile, sha512):
 def do_ed25519(buff_to_sign, length, p_key, pkhfile):
 
     if is_hsm():
-        from tegrasign_v3_hsm import do_ed25519_hsm
+        do_ed25519_hsm = import_function('do_ed25519_hsm')
         return do_ed25519_hsm(buff_to_sign, p_key)
 
     buff_sig = "0" * p_key.keysize
@@ -1091,24 +1108,25 @@ def is_PKC_key(keyfilename, p_key, pkh, mont):
     # pack the arguments
     if pkh and mont:
         if is_hsm():
-            from tegrasign_v3_hsm import get_rsa_mod_hsm, get_rsa_mont_hsm
+            get_rsa_mod_hsm = import_function('get_rsa_mod_hsm')
+            get_rsa_mont_hsm = import_function('get_rsa_mont_hsm')
             return get_rsa_mod_hsm(p_key, pkh) and get_rsa_mont_hsm(p_key, mont)
 
         command.extend(['--isPkcKey', keyfilename, pkh, mont])
     elif pkh:
         if is_hsm():
-            from tegrasign_v3_hsm import get_rsa_mod_hsm
+            get_rsa_mod_hsm = import_function('get_rsa_mod_hsm')
             return get_rsa_mod_hsm(p_key, pkh)
         command.extend(['--isPkcKey', keyfilename, pkh])
     elif mont:
         if is_hsm():
-            from tegrasign_v3_hsm import get_rsa_mont_hsm
+            get_rsa_mont_hsm = import_function('get_rsa_mont_hsm')
             return get_rsa_mont_hsm(p_key, mont)
 
         command.extend(['--isPkcKey', keyfilename, pubkeyfile, mont])
     else:
         if is_hsm():
-            from tegrasign_v3_hsm import get_rsa_mod_hsm
+            get_rsa_mod_hsm = import_function('get_rsa_mod_hsm')
             return get_rsa_mod_hsm(p_key)
         command.extend(['--isPkcKey', keyfilename])
 
@@ -1136,24 +1154,25 @@ def is_PKC_pubkey(keyfilename, p_key, pkh, mont):
     # pack the arguments
     if pkh and mont:
         if is_hsm():
-            from tegrasign_v3_hsm import get_rsa_mod_from_pubkey_hsm, get_rsa_mont_from_pubkey_hsm
+            get_rsa_mod_from_pubkey_hsm = import_function('get_rsa_mod_from_pubkey_hsm')
+            get_rsa_mont_from_pubkey_hsm = import_function('get_rsa_mont_from_pubkey_hsm')
             return get_rsa_mod_from_pubkey_hsm(p_key, pkh) and get_rsa_mont_from_pubkey_hsm(p_key, mont)
 
         command.extend(['--isPkcPubKey', keyfilename, pkh, mont])
     elif pkh:
         if is_hsm():
-            from tegrasign_v3_hsm import get_rsa_mod_from_pubkey_hsm
+            get_rsa_mod_from_pubkey_hsm = import_function('get_rsa_mod_from_pubkey_hsm')
             return get_rsa_mod_from_pubkey_hsm(p_key, pkh)
         command.extend(['--isPkcPubKey', keyfilename, pkh])
     elif mont:
         if is_hsm():
-            from tegrasign_v3_hsm import get_rsa_mont_from_pubkey_hsm
+            get_rsa_mont_from_pubkey_hsm = import_function('get_rsa_mont_from_pubkey_hsm')
             return get_rsa_mont_from_pubkey_hsm(p_key, mont)
 
         command.extend(['--isPkcPubKey', keyfilename, pubkeyfile, mont])
     else:
         if is_hsm():
-            from tegrasign_v3_hsm import get_rsa_mod_from_pubkey_hsm
+            get_rsa_mod_from_pubkey_hsm = import_function('get_rsa_mod_from_pubkey_hsm')
             return get_rsa_mod_from_pubkey_hsm(p_key)
         command.extend(['--isPkcPubKey', keyfilename])
 
@@ -1198,7 +1217,7 @@ def is_ECC_key(keyfilename, p_key, pkh):
 def is_ED25519_key(keyfilename, p_key, pkh):
 
     if is_hsm():
-        from tegrasign_v3_hsm import get_ed25519_pub_hsm
+        get_ed25519_pub_hsm = import_function('get_ed25519_pub_hsm')
         return get_ed25519_pub_hsm(p_key, pkh)
 
     command = exec_file(TegraOpenssl)
@@ -1492,7 +1511,7 @@ def do_kdf_params_oem_t234(dk, params, kdf_list, p_key):
                 sbk_keystr = hex_to_str(p_key.key.aeskey)
 
     return [None, None, None, sbk_keystr, None,
-            bl_kdk_ctx['Msg'], tz_kdk_ctx['Msg'], gp_kdk_ctx['Msg'], kdk_ctx['Msg'], dk_ctx['Msg']]
+            bl_kdk_ctx['Msg'], tz_kdk_ctx['Msg'], gp_kdk_ctx['Msg'], kdk_ctx['Msg'], dk_ctx['Msg']], dk_ctx['Msg']
 
 # calls for offset, then enc, then do sha and returns
 def do_kdf_oem_enc(kdf_list, p_key, blockSize):
@@ -1587,7 +1606,7 @@ def do_kdf_oem_enc(kdf_list, p_key, blockSize):
                     p_key.kdf.bl_label.get_hexbuf(), p_key.kdf.fw_label.get_hexbuf()]
 
             if p_key.kdf.deviceid.is_t234() == True:
-                params_slist = do_kdf_params_oem_t234(dk, params, kdf_list, p_key)
+                params_slist, dk_ctx = do_kdf_params_oem_t234(dk, params, kdf_list, p_key)
             else:
                 from tegrasign_v3_nvkey_load import do_kdf_params_oem
                 params_slist = do_kdf_params_oem(dk, params, kdf_list, p_key)
@@ -1597,7 +1616,7 @@ def do_kdf_oem_enc(kdf_list, p_key, blockSize):
                 blockSize='262144'
                 info_print('encrypt compress image with block size '+blockSize)
 
-            if (do_kdf_oem(params_slist, params, kdf_list, p_key, blockSize, p_key.kdf.compress) == False):
+            if (do_kdf_oem(params_slist, params, kdf_list, p_key, blockSize, p_key.kdf.compress, dk_ctx) == False):
                 return False
 
             tag_off = int.from_bytes(p_key.kdf.tag_off.get_hexbuf(),  "little")
@@ -1619,6 +1638,7 @@ def do_kdf_oem_enc(kdf_list, p_key, blockSize):
                 if pay_sz != int(p_key.kdf.meta_blob_sz):
                     info_print('Size of meta blob is not aligned after compression and after encryption')
                     return False
+
             enc_file_sha = compute_sha('sha512', enc_file, pay_off, pay_sz)
 
             with open(enc_file_sha, 'rb') as enc_f:
@@ -1663,8 +1683,9 @@ def create_kdk_list(p_key):
 # Returns:
 #    unq_id of the last entry created, this should be dk for create_dk flag
 #    Note: throws exception in the case of key derivation failure
-def create_keystore(params, p_key, create_dk = False):
-    from tegrasign_v3_hsm import oem_hsm_kdf
+def create_keystore(params, p_key, create_dk = False, user_kdk = False, dk_ctx = None):
+    if is_hsm():
+        oem_hsm_kdf = import_function('oem_hsm_kdf')
 
     if create_dk == False:
         dk_list = params['DK']
@@ -1717,15 +1738,17 @@ def create_keystore(params, p_key, create_dk = False):
 # The code path is defined for HSM and non-HSM mode
 # Returns:
 #     success - True/False
-def do_kdf_oem(params_slist, params, kdf_list, p_key, blockSize, isCompress):
+def do_kdf_oem(params_slist, params, kdf_list, p_key, blockSize, isCompress, dk_ctx = None):
     if is_hsm():
-        from tegrasign_v3_hsm import oem_hsm_aes_gcm
+        oem_hsm_aes_gcm = import_function('oem_hsm_aes_gcm')
+        do_random_hsm = import_function('do_random_hsm')
 
         create_dk = True
-        unq_id = create_keystore(params, p_key, create_dk)
+        unq_id = create_keystore(params, p_key, create_dk, p_key.kdf.enc == 'USER_KDK', dk_ctx)
 
         if blockSize == "0":
-            result, encrypted_buf, iv, tag = oem_hsm_aes_gcm(kdf_list[KdfArg.SRC][:], p_key.kdf.get_aad_noiv(), unq_id)
+            result, encrypted_buf, iv, tag = oem_hsm_aes_gcm(kdf_list[KdfArg.SRC][:], p_key.kdf.iv.get_strbuf(), \
+                                                             p_key.kdf.aad.get_strbuf(), unq_id)
             if result == True:
                 p_key.kdf.iv.set_buf(str_to_hex(iv))
                 kdf_list[KdfArg.IV] = str_to_hex(iv)
@@ -1740,21 +1763,31 @@ def do_kdf_oem(params_slist, params, kdf_list, p_key, blockSize, isCompress):
         tag_size = 16
         dgt_off = 28
         dgt_size = 64
+        metablob_aligned_sz = 4096
         blob_sz = iv_size + tag_size + dgt_size
+        src_len = len(kdf_list[KdfArg.SRC][:]) - int(p_key.kdf.meta_blob_sz)
 
-        last_blk_len = p_key.len % blockSize
-        blk_cnt = int(p_key.len / blockSize) + (1 if (last_blk_len != 0) else 0)
+        last_blk_len = src_len % blockSize
+        blk_cnt = int(src_len / blockSize) + (1 if (last_blk_len != 0) else 0)
         blob_alloc_sz = blob_sz * (blk_cnt + 1)
+        # meta blob is 4KB aligned
+        if (blob_alloc_sz % metablob_aligned_sz) != 0:
+            blob_alloc_sz = int(blob_alloc_sz/metablob_aligned_sz + 1) * metablob_aligned_sz
+        else:
+            blob_alloc_sz = int(blob_alloc_sz/metablob_aligned_sz) * metablob_aligned_sz
+        # meta blob size calculation here must be aligned with
+        # the one calculated in tegrahost during image compression
+        if (blob_alloc_sz != int(p_key.kdf.meta_blob_sz)):
+            raise tegrasign_exception('meta blob size is not aligned before compressed encrption')
         blob_buf = bytearray(blob_alloc_sz)
 
         # Get ramdom strings
         p_key.ran.size = iv_size
         p_key.ran.count = blk_cnt - 1 # Use p_key's IV for the first itereation
         p_key.Sha = Sha._512
-        from tegrasign_v3_hsm import do_random_hsm
         do_random_hsm(p_key)
         # write blk_cnt to the first blob
-        blob_buf[0:4] = int_2bytes(4, blk_cnt)
+        blob_buf[0:blob_sz] = int_2bytes(blob_sz, blk_cnt)
 
         for i in range(blk_cnt):
             if i+1 == blk_cnt:
@@ -1762,23 +1795,21 @@ def do_kdf_oem(params_slist, params, kdf_list, p_key, blockSize, isCompress):
             else:
                 p_key.len = blockSize
 
-            start = i * blockSize
+            # Buffer start from end of meta blob
+            start = i * blockSize + blob_alloc_sz
             end = start + p_key.len
 
             result, kdf_list[KdfArg.SRC][start:end], iv_str, tag_str = oem_hsm_aes_gcm(kdf_list[KdfArg.SRC][start:end], \
-                p_key.kdf.aad.get_strbuf(), unq_id, False, p_key.kdf.iv.get_strbuf())
+                p_key.kdf.iv.get_strbuf(), p_key.kdf.aad.get_strbuf(), unq_id)
             buff = bytearray(hashlib.sha512(kdf_list[KdfArg.SRC][start:end]).digest())
-            # Start writing to the 2nd blob b/c first blob has the blk_cnt
-            start = (i+1) * blob_sz
-            end = start + iv_size
-            blob_buf[start+iv_off:start+iv_off+iv_size] = str_to_hex(iv_str)
-            blob_buf[start+tag_off:start+tag_off+tag_size] = str_to_hex(tag_str)
-            blob_buf[start+dgt_off:start+dgt_off+dgt_size] = buff[:]
 
-            # Get iv for the next itereation
-            start = i * iv_size
-            end = start + iv_size
-            p_key.kdf.iv.set_buf(p_key.ran.buf[start:end])
+            # Start writing to the 2nd blob b/c first blob has the blk_cnt
+            blob_start = (i+1) * blob_sz
+            end = blob_start + blob_sz
+            blob_buf[blob_start+iv_off:blob_start+iv_off+iv_size] = str_to_hex(iv_str)
+            blob_buf[blob_start+tag_off:blob_start+tag_off+tag_size] = str_to_hex(tag_str)
+            blob_buf[blob_start+dgt_off:blob_start+dgt_off+dgt_size] = buff[:]
+
         p_key.len = len(p_key.src_buf)
         # Save blob to the tag field
         kdf_list[KdfArg.TAG] = blob_buf[:]
@@ -1861,12 +1892,12 @@ def do_derive_dk_oem(dk, params, kdf_list, p_key, blockSize):
 
     if dk in dk_list:
         if p_key.kdf.deviceid.is_t234() == True:
-            params_slist = do_kdf_params_oem_t234(dk, params, kdf_list, p_key)
+            params_slist, dk_ctx = do_kdf_params_oem_t234(dk, params, kdf_list, p_key)
         else:
             from tegrasign_v3_nvkey_load import do_kdf_params_oem
             params_slist = do_kdf_params_oem(dk, params, kdf_list, p_key)
 
-        return do_kdf_oem(params_slist, params, kdf_list, p_key, blockSize, p_key.kdf.compress)
+        return do_kdf_oem(params_slist, params, kdf_list, p_key, blockSize, p_key.kdf.compress, dk_ctx)
     raise tegrasign_exception('Can not derive %s' % (dk))
 
 def map_bin_to_dk_oem(p_key, params):
@@ -2069,7 +2100,7 @@ def do_derive_cbc(p_key):
 
 def do_random(p_key):
     if is_hsm():
-        from tegrasign_v3_hsm import do_random_hsm
+        do_random_hsm = import_function('do_random_hsm')
         do_random_hsm(p_key)
     else:
         p_key.ran.buf = bytearray(p_key.ran.size * p_key.ran.count)
@@ -2089,7 +2120,8 @@ def do_random(p_key):
 # else it is created, then do hmacsha
 def do_derive_hmacsha(p_key):
     if is_hsm():
-        from tegrasign_v3_hsm import oem_hsm_kdf, oem_hsm_hmacsha
+        oem_hsm_kdf = import_function('oem_hsm_kdf')
+        oem_hsm_hmacsha = import_function('oem_hsm_hmacsha')
         label = p_key.kdf.label.get_strbuf()
         context = p_key.kdf.context.get_strbuf()
 
@@ -2126,7 +2158,8 @@ def do_derive_hmacsha(p_key):
 # else it is created, then do aesgcm
 def do_derive_aesgcm(p_key, internal):
     if is_hsm():
-        from tegrasign_v3_hsm import oem_hsm_kdf, oem_hsm_aes_gcm
+        oem_hsm_kdf = import_function('oem_hsm_kdf')
+        oem_hsm_aes_gcm = import_function('oem_hsm_aes_gcm')
         label = p_key.kdf.label.get_strbuf()
         context = p_key.kdf.context.get_strbuf()
 
@@ -2140,7 +2173,8 @@ def do_derive_aesgcm(p_key, internal):
         unq_id = create_unique(key_list[kdk], label, context)
         if oem_hsm_kdf(kdk, label, context, unq_id) == False: # i.e. FSKP_KDK, label, context, FKP_EK_07c27e96cc6b76b416ee64d87ba996f1
                 raise tegrasign_exception('Can not derive %s' % (unq_id))
-        result, buff_enc, iv, tag = oem_hsm_aes_gcm(p_key.get_sign_buf(), p_key.kdf.get_aad_noiv(), unq_id)
+        result, buff_enc, iv, tag = oem_hsm_aes_gcm(p_key.get_sign_buf(), p_key.kdf.iv.get_strbuf(), \
+                                                    p_key.kdf.aad.get_strbuf(), unq_id)
     else:
         key = do_kdf_kdf2(hex_to_str(p_key.key.aeskey), None, p_key.kdf.label.get_strbuf(), p_key.kdf.context.get_strbuf(), True)
         backup = p_key

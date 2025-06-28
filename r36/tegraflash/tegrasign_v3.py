@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# Copyright (c) 2018-2024, NVIDIA Corporation.  All Rights Reserved.
+# Copyright (c) 2018-2025, NVIDIA Corporation.  All Rights Reserved.
 #
 # NVIDIA Corporation and its licensors retain all intellectual property
 # and proprietary rights in and to this software, related documentation
@@ -33,7 +33,8 @@ internal = {
             "--verify" : None,
             "--verbose": None,
             "--random" : None,
-            "--block"  : "0"
+            "--block"  : "0",
+            "--softhsm": None
           }
 
 def clear_internal():
@@ -54,6 +55,7 @@ def clear_internal():
     internal["--verify"] = None
     internal["--verbose"] = None
     internal["--block"] = "0"
+    internal["--softhsm"] = None
 
 
 def print_help():
@@ -86,6 +88,7 @@ def parse_cmdline(commandLine):
     parser.add_argument("--verbose", help="Print verbose information", action='store_true')
     parser.add_argument("--random", help="Generate random strings of <byte_size><count> and save to --file <file>", nargs='+')
     parser.add_argument("--block", help="Perform encryption or SHA in blocks of specified size", default="0")
+    parser.add_argument("--softhsm", help="Invoke Soft HSM-mode", action='store_true')
 
     # print help if the # of args == 1
     if not len(commandLine) > 0:
@@ -376,7 +379,7 @@ def print_args(internal):
         if internal["--kdf"]:
             argstr += ' --kdf ' + ' '.join(internal["--kdf"])
         if internal["--hsm"]:
-            argstr += ' --hsm ' + ' '.join(internal["--hsm"])
+            argstr += ' --hsm ' + ''.join(internal["--hsm"])
 
         if internal["--getmode"]:
             # check to see if it's a list
@@ -407,7 +410,7 @@ def print_args(internal):
         info_print('Encounter exception when printing argument list')
         info_print(e.message)
 
-def tegrasign(args_file, args_getmode, args_getmont, args_key, args_length, args_list, args_offset, args_pubkeyhash, args_sha, args_enc, args_verbose=False, args_iv=0, args_aad=0, args_tag=0, args_sign=None, args_verify=0, args_kdf=None, args_hsm=None, args_ran=None, args_block='0'):
+def tegrasign(args_file, args_getmode, args_getmont, args_key, args_length, args_list, args_offset, args_pubkeyhash, args_sha, args_enc, args_verbose=False, args_iv=0, args_aad=0, args_tag=0, args_sign=None, args_verify=0, args_kdf=None, args_hsm=None, args_ran=None, args_block='0', args_softhsm=False):
 
     internal["--file"] = args_file
     internal["--getmode"] = args_getmode
@@ -429,10 +432,11 @@ def tegrasign(args_file, args_getmode, args_getmont, args_key, args_length, args
     internal["--hsm"] = args_hsm
     internal["--random"] = args_ran
     internal["--block"] = args_block
+    internal["--softhsm"] = args_softhsm
 
     print_args(internal)
 
-    set_env(__name__=='__main__', args_verbose, args_hsm != None, None)
+    set_env(__name__=='__main__', args_verbose, args_hsm != None, None, args_softhsm)
 
     try:
         is_kdf_file = (internal["--kdf"] != None) and ('kdf_file' in ''.join(internal["--kdf"]).lower())
@@ -670,7 +674,7 @@ def main(commandLineArgs):
 
     if not args is False:
         retVal = tegrasign(args.file, args.getmode, args.getmontgomeryvalues, args.key, args.length,
-            args.list, args.offset, args.pubkeyhash, args.sha, args.enc, args.verbose, args.iv, args.aad, args.tag, args.sign, args.verify, args.kdf, args.hsm, args.random, args.block)
+            args.list, args.offset, args.pubkeyhash, args.sha, args.enc, args.verbose, args.iv, args.aad, args.tag, args.sign, args.verify, args.kdf, args.hsm, args.random, args.block, args.softhsm)
         return retVal
     return 1
 
@@ -687,6 +691,7 @@ Argument List Order:
 --sha
 --enc
 --verbose : optional, this is not enabled from tegraflash, standalone can be enabled
+--softhsm : optional, this is not enabled from tegraflash, standalone can be enabled
 '''
 if __name__=='__main__':
     main(sys.argv[1:])

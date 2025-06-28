@@ -1,7 +1,7 @@
 from __future__ import print_function
 
 #
-# Copyright (c) 2018-2024, NVIDIA Corporation.  All Rights Reserved.
+# Copyright (c) 2018-2025, NVIDIA Corporation.  All Rights Reserved.
 #
 # NVIDIA Corporation and its licensors retain all intellectual property
 # and proprietary rights in and to this software, related documentation
@@ -144,28 +144,29 @@ class HSM:
             self.type = mode
             return
         # Parse the hsm flag for the mode explicitly
-        for arg in arg_list:
-            arg = arg.upper()
-            if KeyType.FSKP_AK in arg:
-                self.type = KeyType.FSKP_AK
-            elif KeyType.FSKP_EK in arg:
-                self.type = KeyType.FSKP_EK
-            elif KeyType.FSKP_KDK in arg:
-                self.type = KeyType.FSKP_KDK
-            elif KeyType.FSKP in arg:
-                self.type = KeyType.FSKP
-            elif KeyType.KEK0 in arg:
-                self.type = KeyType.KEK0
-            elif KeyType.SBK in arg:
-                self.type = KeyType.SBK
-            elif 'RSA' in arg:
-                self.type = KeyType.PKC
-            elif KeyType.ED25519 in arg:
-                self.type = KeyType.ED25519
-            elif 'ALGO' in arg:
-                self.algo_only = True
-            else:
-                raise tegrasign_exception('Unknown HSM type parsed: ' + arg)
+        arg = ''.join(arg_list).upper()
+        if KeyType.FSKP_AK in arg:
+            self.type = KeyType.FSKP_AK
+        elif KeyType.FSKP_EK in arg:
+            self.type = KeyType.FSKP_EK
+        elif KeyType.FSKP_KDK in arg:
+            self.type = KeyType.FSKP_KDK
+        elif KeyType.FSKP in arg:
+            self.type = KeyType.FSKP
+        elif KeyType.KEK0 in arg:
+            self.type = KeyType.KEK0
+        elif KeyType.SBK in arg:
+            self.type = KeyType.SBK
+        elif 'RSA' in arg:
+            self.type = KeyType.PKC
+        elif KeyType.ED25519 in arg:
+            self.type = KeyType.ED25519
+        elif 'ALGO' in arg:
+            self.algo_only = True
+        elif KeyType.PV_ENC_KEY in arg:
+            self.type = KeyType.PV_ENC_KEY
+        else:
+            raise tegrasign_exception('Unknown HSM type parsed: ' + arg)
 
     def get_type(self):
         return self.type
@@ -586,6 +587,7 @@ start_time = time.time()
 is_standalone = False
 is_verbose = False
 is_hsm_on = False
+is_softhsm_on = False
 script_dir= os.path.dirname(os.path.realpath(__file__)) + os.sep
 bin_dir = script_dir
 pid = str(os.getpid())
@@ -602,6 +604,13 @@ To generate and return a bytearray of random numbers for the given count length
 '''
 def random_gen(count):
     # generate bytearray of random numbers for the given count length
+    if is_hsm() and is_softhsm():
+        internal = SignKey()
+        internal.ran.size = count
+        internal.ran.count = 1
+        from tegrasign_v3_softhsm import do_random_hsm
+        do_random_hsm(internal)
+        return internal.ran.buf
     return os.urandom(count)
 
 
@@ -657,7 +666,7 @@ def print_process(process, capture_log = False):
 
     return log
 
-def set_env(standalone, verbose, hsm = False, path = None):
+def set_env(standalone, verbose, hsm = False, path = None, softhsm = False):
     global cmd_environ
     local_env = os.environ
 
@@ -681,6 +690,9 @@ def set_env(standalone, verbose, hsm = False, path = None):
     global is_hsm_on
     is_hsm_on = hsm
 
+    global is_softhsm_on
+    is_softhsm_on = softhsm
+
     if path != None:
         global bin_dir
         bin_dir = path
@@ -691,6 +703,10 @@ Returns the flag indicating HSM mode or not
 def is_hsm():
     global is_hsm_on
     return is_hsm_on
+
+def is_softhsm():
+    global is_softhsm_on
+    return is_softhsm_on
 
 def run_command(cmd, enable_print=True):
 
@@ -1006,7 +1022,6 @@ def create_unique(in_key_id, in_label, in_context, in_kdk_stem = None):
         else:
             stem = '%s_%s_%s_%s' %(in_key_id, in_kdk_stem, in_label, in_context)
     unq_in_key_id = '%s_%s' %(in_key_id, hashlib.md5(stem.encode('utf-8')).hexdigest())
-    info_print('Generating ' + stem + ' => ' + unq_in_key_id)
     return unq_in_key_id
 
 '''
@@ -1016,8 +1031,8 @@ def create_unique(in_key_id, in_label, in_context, in_kdk_stem = None):
 '''
 def do_aes_gcm(buff_to_enc, length, p_key, iv, aad, tag, verify_opt, verbose):
     if is_hsm():
-        from tegrasign_v3_hsm import do_aes_gcm_hsm
-        return do_aes_gcm_hsm(buff_to_enc, p_key)
+        do_aes_gcm_hsm = import_function('do_aes_gcm_hsm')
+        return do_aes_gcm_hsm(buff_to_enc, p_key, iv, aad)
     base_name = script_dir + 'v3_gcm_' + pid
     raw_name = base_name + '.raw'
     result_name = base_name + '.out'
@@ -1112,3 +1127,17 @@ def do_aes_gcm(buff_to_enc, length, p_key, iv, aad, tag, verify_opt, verbose):
             p_key.kdf.tag.set_buf(str_to_hex(ret_str[start+tag_str_len:end]))
     os.remove(raw_name)
     return buff_sig
+
+'''
+Dynamic loading function from tegrasign_v3_hsm.py or tegrasign_v3_softhsm.py
+'''
+def import_function(function_name):
+    if is_hsm() and is_softhsm():
+        module_name = 'tegrasign_v3_softhsm'
+    elif is_hsm() and not is_softhsm():
+        module_name = 'tegrasign_v3_hsm'
+    else:
+       raise tegrasign_exception('Error: cannot import HSM function since HSM feature is not enabled')
+
+    module = __import__(module_name, fromlist=[function_name])
+    return getattr(module, function_name)
