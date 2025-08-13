@@ -73,7 +73,7 @@ cc_defaults {
   target: {
     android_arm64: {
       srcs: [":libnvcontrol_jni_64-srcs"],
-      shared_libs: ["liblog", "libcutils", "libjpeg", "libc++", "libc", "libm", "libdl", ],
+      shared_libs: ["liblog", "libcutils", "libc++", "libc", "libm", "libdl", ],
     },
   },
 }
@@ -103,7 +103,7 @@ cc_defaults {
   target: {
     android_arm: {
       srcs: [":libnvcontrol_jni_32-srcs"],
-      shared_libs: ["liblog", "libcutils", "libjpeg", "libc++", "libc", "libm", "libdl", ],
+      shared_libs: ["liblog", "libcutils", "libc++", "libc", "libm", "libdl", ],
     },
   },
 }
